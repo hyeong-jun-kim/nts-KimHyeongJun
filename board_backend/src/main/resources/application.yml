@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/BoardDB
+    username: root
+    password: 1q2w3e4r!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update #?? ??? ?
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+
+  logging:
+    level:
+      org.hibernate.SQL:debug
