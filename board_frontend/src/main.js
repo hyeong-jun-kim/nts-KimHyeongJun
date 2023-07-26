@@ -7,6 +7,9 @@ import './assets/common.css'
 import Writer from './common/components/Writer'
 import Password from './common/components/Password'
 
+import axios from 'axios'
+import postService from './services/postService'
+
 // 부트스트랩 설정
 // Import Bootstrap and BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
@@ -19,6 +22,9 @@ Vue.use(IconsPlugin)
 
 Vue.config.productionTip = false
 
+// axios 설정
+Vue.prototype.$http = axios
+
 // 컴포넌트 설정
 Vue.component("writer", Writer)
 Vue.component("password", Password)
@@ -26,4 +32,7 @@ Vue.component("password", Password)
 new Vue({
   router,
   render: h => h(App),
+  provide : {
+    postService: new postService,  // 부모 컴포넌트에서 설정
+  }
 }).$mount('#app')
