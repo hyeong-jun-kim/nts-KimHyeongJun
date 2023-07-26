@@ -1,3 +1,4 @@
+<!--게시글 작성 화면-->
 <template>
     <div id="board-deatil">
         <div class="user-container">
