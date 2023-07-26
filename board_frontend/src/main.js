@@ -2,7 +2,12 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import './assets/common.css'
 
+import Writer from './common/components/Writer'
+import Password from './common/components/Password'
+
+// 부트스트랩 설정
 // Import Bootstrap and BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -13,6 +18,10 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 Vue.config.productionTip = false
+
+// 컴포넌트 설정
+Vue.component("writer", Writer)
+Vue.component("password", Password)
 
 new Vue({
   router,

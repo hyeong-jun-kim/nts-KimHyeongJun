@@ -1,0 +1,23 @@
+.writer{
+    width: 200px;
+    margin: auto;
+}
+
+.password{
+    width: 200px;
+    margin: auto;
+}
+
+.board-contents {
+    padding: 12px 40px;
+    border-bottom: 1px solid #eee;
+}
+
+.common-buttons {
+    padding: 30px;
+}
+
+.user-container {
+    padding: 10px 40px;
+}
+
