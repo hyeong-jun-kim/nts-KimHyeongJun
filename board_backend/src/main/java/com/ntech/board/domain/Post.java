@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -15,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_id")
+    @Column(name = "post_id")
     private long id;
 
     private String writer;
@@ -25,4 +27,14 @@ public class Post extends BaseEntity {
     private String content;
 
     private String title;
+
+    private int viewCount;
+
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name="post_id")
+    private List<Like> likes;
+
+    public void addLike(Like like){
+        this.likes.add(like);
+    }
 }
