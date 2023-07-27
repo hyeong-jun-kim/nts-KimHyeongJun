@@ -7,9 +7,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
@@ -21,7 +18,7 @@ public class BaseEntity {
     private String updatedAt;
 
     @Enumerated(EnumType.STRING)
-    private BaseStatus status;
+    private BaseStatus status = BaseStatus.ACTIVE; // 기본 설정은 ACTIVE
 
     protected void setStatus(BaseStatus status){
         this.status = status;

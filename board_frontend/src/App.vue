@@ -1,10 +1,25 @@
 <template>
   <div id="app">
     <div id="content" class="content">
-      <router-view></router-view>
+      <PageHeader/> <!--헤더 컴포넌트-->
+      <router-view/> <!--페이지 이동 표시-->
+      <PageFooter/> <!--푸터 컴포넌트-->
     </div>
   </div>
 </template>
+
+<script>
+  import PageHeader from './common/components/PageHeader'
+  import PageFooter from './common/components/PageFooter'
+
+  export default {
+    name: 'App',
+    components: {
+      PageHeader,
+      PageFooter
+    }
+  }
+</script>
 
 <style>
 #app {

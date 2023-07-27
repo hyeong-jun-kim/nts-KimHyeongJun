@@ -16,6 +16,10 @@ public enum BaseResponseStatus {
      * 2000 : Request 오류
      */
     REQUEST_ERROR(false, 2000, "입력값을 확인해주세요."),
+    PASSWORD_LENGTH_ERROR(false, 2001, "비밀번호 길이가 올바르지 않습니다."),
+    WRITER_LENGTH_ERROR(false, 2001, "작성자의 길이가 올바르지 않습니다."),
+    TITLE_LENGTH_ERROR(false, 2001, "제목의 길이가 올바르지 않습니다."),
+    CONTENT_LENGTH_ERROR(false, 2001, "게시글 본문의 길이가 올바르지 않습니다."),
 
     /**
      * 3000 : Response 오류
