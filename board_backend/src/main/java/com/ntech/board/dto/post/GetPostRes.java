@@ -9,6 +9,7 @@ import lombok.*;
 @Setter
 @Builder
 public class GetPostRes {
+    private long postId;
     private String title;
     private String content;
     private int likeCnt;
@@ -17,12 +18,14 @@ public class GetPostRes {
     private String writer;
     private String createdAt;
 
-    public static GetPostRes toDto(Post post, int likeCnt){
+    public static GetPostRes toDto(Post post, int likeCnt, int unLikeCnt){
         return GetPostRes.builder()
+                .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .viewCount(post.getViewCount())
                 .likeCnt(likeCnt)
+                .unLikeCnt(unLikeCnt)
                 .writer(post.getWriter())
                 .createdAt(post.getCreatedAt())
                 .build();
