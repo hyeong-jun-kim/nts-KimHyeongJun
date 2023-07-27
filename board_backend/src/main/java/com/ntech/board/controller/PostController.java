@@ -23,8 +23,8 @@ public class PostController {
     }
 
     // 게시글 목록 불러오기 (페이징)
-    @GetMapping("/list/{page}")
-    public BaseResponse<PageResult<GetPostRes>> getPostPagingList(@PathVariable("page") int page){
+    @GetMapping("/list")
+    public BaseResponse<PageResult<GetPostRes>> getPostPagingList(@RequestParam("page") int page){
         PageResult<GetPostRes> postPages = postService.getPostList(page);
         return new BaseResponse<>(postPages);
     }

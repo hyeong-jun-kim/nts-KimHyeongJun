@@ -13,12 +13,18 @@ public class GetPostRes {
     private String content;
     private int likeCnt;
     private int unLikeCnt;
+    private int viewCount;
+    private String writer;
+    private String createdAt;
 
     public static GetPostRes toDto(Post post, int likeCnt){
         return GetPostRes.builder()
                 .title(post.getTitle())
                 .content(post.getContent())
+                .viewCount(post.getViewCount())
                 .likeCnt(likeCnt)
+                .writer(post.getWriter())
+                .createdAt(post.getCreatedAt())
                 .build();
     }
 }
