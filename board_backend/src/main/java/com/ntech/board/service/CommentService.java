@@ -1,14 +1,11 @@
 package com.ntech.board.service;
 
 import com.ntech.board.config.response.BaseException;
-import com.ntech.board.config.response.BaseResponseStatus;
 import com.ntech.board.domain.Comment;
 import com.ntech.board.domain.Post;
-import com.ntech.board.dto.comment.CommentDTO;
 import com.ntech.board.dto.comment.CreateCommentReq;
 import com.ntech.board.dto.comment.GetCommentRes;
 import com.ntech.board.repository.CommentRepository;
-import com.ntech.board.repository.CommentRepositoryCustom;
 import com.ntech.board.repository.PostRepository;
 import com.ntech.board.utils.encrypt.SHA256;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +23,7 @@ import static com.ntech.board.config.response.BaseResponseStatus.NOT_EXIST_POST;
 @Transactional
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final CommentRepositoryCustom commentRepositoryCustom;
     private final PostRepository postRepository;
-
 
     private final SHA256 sha256;
 
@@ -53,12 +48,12 @@ public class CommentService {
 
         commentRepository.save(comment);
 
-        return getCommentList(post);
+        return getComments(post);
     }
 
     // 댓글 불러오기
-    public List<GetCommentRes> getCommentList(Post post){
-        List<Comment> parentComment = commentRepositoryCustom.findParentComments(post); // 대댓글 제외한 부모 comment 리스트 받아옴
+    public List<GetCommentRes> getComments(Post post){
+        List<Comment> parentComment = commentRepository.getCommentsByPost(post);
         return parentComment.stream().map(GetCommentRes::toDto).collect(Collectors.toList());
     }
 }

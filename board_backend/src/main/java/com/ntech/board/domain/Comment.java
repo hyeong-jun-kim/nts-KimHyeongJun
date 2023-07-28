@@ -29,7 +29,7 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "parent_comment_id")
     private Comment parentComment; // 대댓글 구분용 외래키
 
-    @OneToMany(mappedBy = "parentComment", orphanRemoval = true)
+    @OneToMany(mappedBy = "parentComment")
     private List<Comment> childComment = new ArrayList<>();
 
     private String writer;
@@ -38,11 +38,11 @@ public class Comment extends BaseEntity {
 
     private String password;
 
-    public void addComment(Comment comment){
-        this.childComment.add(comment);
-    }
-
     public void updateParentComment(Comment comment){
         this.parentComment = comment;
+    }
+
+    public void addChildComment(Comment comment){
+        this.childComment.add(comment);
     }
 }

@@ -4,6 +4,7 @@ import com.ntech.board.config.page.PageResult;
 import com.ntech.board.config.response.BaseException;
 import com.ntech.board.config.type.LikeType;
 import com.ntech.board.domain.Post;
+import com.ntech.board.dto.comment.GetCommentRes;
 import com.ntech.board.dto.post.CreatePostReq;
 import com.ntech.board.dto.post.CreatePostRes;
 import com.ntech.board.dto.post.GetPostRes;
@@ -17,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static com.ntech.board.config.page.PageResult.PAGE_SIZE;
 import static com.ntech.board.config.response.BaseResponseStatus.*;
 
@@ -24,6 +27,8 @@ import static com.ntech.board.config.response.BaseResponseStatus.*;
 @RequiredArgsConstructor
 @Transactional
 public class PostService {
+    private final CommentService commentService;
+
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
 
@@ -60,7 +65,12 @@ public class PostService {
         int likeCnt = likeRepository.countByPostAndLikeType(post, LikeType.LIKE);
         int unLikeCnt = likeRepository.countByPostAndLikeType(post, LikeType.UNLIKE);
 
-        return GetPostRes.toDto(post, likeCnt, unLikeCnt);
+        GetPostRes postRes = GetPostRes.toDto(post, likeCnt, unLikeCnt);
+
+        List<GetCommentRes> comments = commentService.getComments(post);
+        postRes.setComments(comments);
+
+        return postRes;
     }
 
     // 게시글 검증 함수
