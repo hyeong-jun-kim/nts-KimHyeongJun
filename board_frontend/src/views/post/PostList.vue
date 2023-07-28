@@ -3,14 +3,16 @@
     <div class="overflow-auto">
         <p class="mt-3">Current Page: {{ currentPage }}</p>
 
-        <b-table id="my-table" ref="table" :items="items" :pages="pageList" :current-page="currentPage"
-            medium></b-table>
-        <b-pagination-nav v-model="currentPage" :link-gen="linkGen" :total-rows="rows" :per-page="size"
-            align="center" :number-of-pages="pageList.length" first-number use-router @change="getPostPagingList"></b-pagination-nav>
+        <b-table id="my-table" ref="table" :items="items" :pages="pageList" :current-page="currentPage" 
+        medium @row-clicked="rowClickHandler"></b-table>
+        <b-pagination-nav v-model="currentPage" :link-gen="linkGen" :total-rows="rows" :per-page="size" align="center"
+            :number-of-pages="pageList.length" first-number use-router @change="getPostPagingList"></b-pagination-nav>
     </div>
 </template>
   
 <script>
+import router from '@/router';
+
 export default {
     inject: ['postService'],
     data() {
@@ -37,15 +39,16 @@ export default {
         },
     },
     methods: {
-         async getPostPagingList(page) { // 게시글 목록 받아오기
-             await this.postService.getPostPagingList(page)
+        async getPostPagingList(page) { // 게시글 목록 받아오기
+            await this.postService.getPostPagingList(page)
                 .then(response => {
                     const result = response.data.result;
-                    
+
                     // 게시글 내용 채우기
                     for (var i = 0; i < result.contents.length; i++) {
                         const content = result.contents[i]
                         const item = new Object()
+                        item.번호 = content.postId
                         item.제목 = content.title
                         item.작성자 = content.writer
                         item.작성일 = content.createdAt
@@ -71,12 +74,17 @@ export default {
                     console.log(error);
                 });
         },
-        linkGen(pageNum) { // 버튼 클릭시 페이지 이동 함수
+        linkGen(pageNum) { // 버튼 클릭시 페이지 이동시키는 함수
             return {
                 path: '/posts',
                 query: { page: pageNum }
             }
         },
+        rowClickHandler(record){ // 테이블 행 클릭시 게시글 상세보기로 이동시키는 함수
+            router.push({
+                path: '/post/'+record.번호,
+            });
+        }
     }
 }
 </script>

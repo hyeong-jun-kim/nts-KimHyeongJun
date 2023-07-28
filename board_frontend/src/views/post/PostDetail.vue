@@ -5,8 +5,8 @@
         <div class="post-detail-contents">
             <b-card :title="postTitle" class="text-left">
                 <b-row align-h="between">
-                    <b-col cols="1">닉네임: {{ writer }}</b-col>
-                    <b-col class="text-left" cols="9">작성일지: {{ createdAt }}</b-col>
+                    <b-col cols="5">닉네임: {{ writer }}</b-col>
+                    <b-col class="text-left" cols="10">작성일지: {{ createdAt }}</b-col>
                     <b-col class="text-right" cols="1">조회수: {{ viewCnt }}</b-col>
                     <b-col class="text-right" cols="1">댓글수: {{ commentList.length }}</b-col>
                 </b-row>
