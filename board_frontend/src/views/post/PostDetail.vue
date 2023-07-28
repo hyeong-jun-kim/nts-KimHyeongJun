@@ -8,12 +8,12 @@
                     <b-col cols="5">닉네임: {{ writer }}</b-col>
                     <b-col class="text-left" cols="10">작성일지: {{ createdAt }}</b-col>
                     <b-col class="text-right" cols="1">조회수: {{ viewCnt }}</b-col>
-                    <b-col class="text-right" cols="1">댓글수: {{ commentList.length }}</b-col>
+                    <b-col class="text-right" cols="1">좋아요: {{ commentList.length }}</b-col>
                 </b-row>
             </b-card>
         </div>
         <!--본문-->
-        <div class="post-detail-contents"> 
+        <div class="post-detail-contents">
             <b-card class="text-left">
                 <b-card-text>
                     {{ content }}
@@ -37,6 +37,20 @@
                     <b-col class="text-left" cols="9">내용</b-col>
                     <b-col cols="1">작성일지</b-col>
                 </b-row>
+            </b-card>
+        </div>
+        <!--댓글 작성하기-->
+        <div class="post-detail-contents">
+            <b-card>
+                <b-row>
+                    <b-form-input class="col-2" v-model="text" type="text" placeholder="아이디"></b-form-input>
+                    <b-form-input class="col-2" v-model="text" type="password" placeholder="비밀번호"></b-form-input>
+                </b-row>
+                <b-row>
+                    <b-form-textarea id="textarea" v-model="text" placeholder="댓글을 작성해보세요!" rows="3" max-rows="3"
+                        style="resize: none"></b-form-textarea>
+                </b-row>
+                <b-button class="mt-3" variant="primary">등록</b-button>
             </b-card>
         </div>
     </div>
