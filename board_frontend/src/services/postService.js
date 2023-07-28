@@ -16,7 +16,18 @@ export default class postService {
     /**
      * 게시글 목록 불러오기
      */
-    getPostList(page){
+    getPostPagingList(page){
+        return $axiosInst
+            .get('/post/list', {
+                params: {
+                    "page": page
+                }
+            });
+    }
+    /**
+     * 게시글 상세조회
+     */
+    getPost(page){
         return $axiosInst
             .get('/post/list', {
                 params: {

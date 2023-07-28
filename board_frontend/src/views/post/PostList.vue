@@ -24,6 +24,7 @@ export default {
             next: false,
             currentPage: this.$route.query.page ? this.$route.query.page : 1,
             pageList: [],
+            postIdList: [],
             items: []
         }
     },
@@ -53,6 +54,7 @@ export default {
                         item.조회수 = content.likeCnt
 
                         this.items[i] = item
+                        this.postIdList[i] = content.postId
                     }
                     // 페이징에 필요한 값 받아오기
                     this.totalPage = result.totalPage
@@ -64,9 +66,7 @@ export default {
                     this.next = result.next
                     this.pageList = result.pageList
 
-                    this.$refs.table.refresh()
-                    console.log(this.items)
-                    console.log(result.contents)
+                    this.$refs.table.refresh() // 테이블 새로고침
                 })
                 .catch(error => {
                     console.log(error);
