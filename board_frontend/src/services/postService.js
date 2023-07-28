@@ -27,12 +27,8 @@ export default class postService {
     /**
      * 게시글 상세조회
      */
-    getPost(page){
+    getPost(postId){
         return $axiosInst
-            .get('/post/list', {
-                params: {
-                    "page": page
-                }
-            });
+            .get('/post/'+postId);
     }
 }

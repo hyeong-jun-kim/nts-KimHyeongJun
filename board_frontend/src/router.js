@@ -12,7 +12,7 @@ const router = new VueRouter({
     routes: [
         {path: "/posts", component: PostList},
         {path:"/post/write", component: PostWrite},
-        {path:"/post", component: PostDetail},
+        {path:"/post/:postId", component: PostDetail},
     ]
 });
 

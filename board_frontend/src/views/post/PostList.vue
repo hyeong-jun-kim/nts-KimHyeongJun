@@ -6,7 +6,7 @@
         <b-table id="my-table" ref="table" :items="items" :pages="pageList" :current-page="currentPage"
             medium></b-table>
         <b-pagination-nav v-model="currentPage" :link-gen="linkGen" :total-rows="rows" :per-page="size"
-            align="center" :number-of-pages="pageList.length" first-number use-router @change="getPostList"></b-pagination-nav>
+            align="center" :number-of-pages="pageList.length" first-number use-router @change="getPostPagingList"></b-pagination-nav>
     </div>
 </template>
   
@@ -29,8 +29,7 @@ export default {
         }
     },
     created() {
-        console.log(this.currentPage)
-        this.getPostList(this.currentPage)
+        this.getPostPagingList(this.currentPage)
     },
     computed: {
         rows() {
@@ -38,8 +37,8 @@ export default {
         },
     },
     methods: {
-         async getPostList(page) { // 게시글 목록 받아오기
-             await this.postService.getPostList(page)
+         async getPostPagingList(page) { // 게시글 목록 받아오기
+             await this.postService.getPostPagingList(page)
                 .then(response => {
                     const result = response.data.result;
                     
