@@ -42,7 +42,7 @@ public class PostService {
 
     // 게시글 목록 불러오기 (페이징 처리)
     public PageResult<GetPostRes> getPostPagingList(int page) {
-        PageRequest pageRequest = PageRequest.of(page - 1, PAGE_SIZE, Sort.by("createdAt").descending());
+        PageRequest pageRequest = PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending());
 
         Page<GetPostRes> postPage = postRepository.findPostPage(pageRequest).map(p -> {
             int likeCnt = likeRepository.countByPostAndLikeType(p, LikeType.LIKE); // 게시글 좋아요 수 카운트
