@@ -17,10 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static com.ntech.board.config.page.PageResult.PAGE_SIZE;
 import static com.ntech.board.config.response.BaseResponseStatus.*;
 
@@ -45,15 +41,26 @@ public class PostService {
     }
 
     // 게시글 목록 불러오기 (페이징 처리)
-    public PageResult<GetPostRes> getPostList(int page) {
-        PageRequest pageRequest = PageRequest.of(page - 1, PAGE_SIZE, Sort.by("createdAt").descending());
+    public PageResult<GetPostRes> getPostPagingList(int page) {
+        PageRequest pageRequest = PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending());
 
         Page<GetPostRes> postPage = postRepository.findPostPage(pageRequest).map(p -> {
             int likeCnt = likeRepository.countByPostAndLikeType(p, LikeType.LIKE); // 게시글 좋아요 수 카운트
-            return GetPostRes.toDto(p, likeCnt);
+            return GetPostRes.toDto(p, likeCnt, 0);
         });
 
         return new PageResult<>(postPage);
+    }
+
+    // 게시글 상세 보기
+    public GetPostRes getPost(long postId){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new BaseException(NOT_EXIST_POST));
+
+        int likeCnt = likeRepository.countByPostAndLikeType(post, LikeType.LIKE);
+        int unLikeCnt = likeRepository.countByPostAndLikeType(post, LikeType.UNLIKE);
+
+        return GetPostRes.toDto(post, likeCnt, unLikeCnt);
     }
 
     // 게시글 검증 함수

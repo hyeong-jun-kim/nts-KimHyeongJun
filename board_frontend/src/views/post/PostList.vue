@@ -3,14 +3,16 @@
     <div class="overflow-auto">
         <p class="mt-3">Current Page: {{ currentPage }}</p>
 
-        <b-table id="my-table" ref="table" :items="items" :pages="pageList" :current-page="currentPage"
-            medium></b-table>
-        <b-pagination-nav v-model="currentPage" :link-gen="linkGen" :total-rows="rows" :per-page="size"
-            align="center" :number-of-pages="pageList.length" first-number use-router @change="getPostList"></b-pagination-nav>
+        <b-table id="my-table" ref="table" :items="items" :pages="pageList" :current-page="currentPage" 
+        medium @row-clicked="rowClickHandler"></b-table>
+        <b-pagination-nav v-model="currentPage" :link-gen="linkGen" :total-rows="rows" :per-page="size" align="center"
+            :number-of-pages="pageList.length" first-number use-router @change="getPostPagingList"></b-pagination-nav>
     </div>
 </template>
   
 <script>
+import router from '@/router';
+
 export default {
     inject: ['postService'],
     data() {
@@ -24,12 +26,12 @@ export default {
             next: false,
             currentPage: this.$route.query.page ? this.$route.query.page : 1,
             pageList: [],
+            postIdList: [],
             items: []
         }
     },
     created() {
-        console.log(this.currentPage)
-        this.getPostList(this.currentPage)
+        this.getPostPagingList(this.currentPage)
     },
     computed: {
         rows() {
@@ -37,15 +39,16 @@ export default {
         },
     },
     methods: {
-         async getPostList(page) { // 게시글 목록 받아오기
-             await this.postService.getPostList(page)
+        async getPostPagingList(page) { // 게시글 목록 받아오기
+            await this.postService.getPostPagingList(page)
                 .then(response => {
                     const result = response.data.result;
-                    
+
                     // 게시글 내용 채우기
                     for (var i = 0; i < result.contents.length; i++) {
                         const content = result.contents[i]
                         const item = new Object()
+                        item.번호 = content.postId
                         item.제목 = content.title
                         item.작성자 = content.writer
                         item.작성일 = content.createdAt
@@ -53,6 +56,7 @@ export default {
                         item.조회수 = content.likeCnt
 
                         this.items[i] = item
+                        this.postIdList[i] = content.postId
                     }
                     // 페이징에 필요한 값 받아오기
                     this.totalPage = result.totalPage
@@ -64,20 +68,23 @@ export default {
                     this.next = result.next
                     this.pageList = result.pageList
 
-                    this.$refs.table.refresh()
-                    console.log(this.items)
-                    console.log(result.contents)
+                    this.$refs.table.refresh() // 테이블 새로고침
                 })
                 .catch(error => {
                     console.log(error);
                 });
         },
-        linkGen(pageNum) { // 버튼 클릭시 페이지 이동 함수
+        linkGen(pageNum) { // 버튼 클릭시 페이지 이동시키는 함수
             return {
                 path: '/posts',
                 query: { page: pageNum }
             }
         },
+        rowClickHandler(record){ // 테이블 행 클릭시 게시글 상세보기로 이동시키는 함수
+            router.push({
+                path: '/post/'+record.번호,
+            });
+        }
     }
 }
 </script>

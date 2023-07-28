@@ -11,14 +11,11 @@ import WarningAlert from './common/components/WarningAlert'
 import axios from 'axios'
 import postService from './services/postService'
 
-// 부트스트랩 설정
-// Import Bootstrap and BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-// Make BootstrapVue available throughout your project
+// 부트스트랩 설정
 Vue.use(BootstrapVue)
-// Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
 
 Vue.config.productionTip = false
@@ -38,3 +35,9 @@ new Vue({
     postService: new postService,  // 부모 컴포넌트에서 설정
   }
 }).$mount('#app')
+
+
+//hand-thumbs-down
+// hand-thumbs-down-fill
+// hand-thumbs-up
+// hand-thumbs-up-fill
