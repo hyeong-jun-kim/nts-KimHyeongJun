@@ -21,6 +21,7 @@ public enum BaseResponseStatus {
     TITLE_LENGTH_ERROR(false, 2003, "제목의 길이가 올바르지 않습니다."),
     CONTENT_LENGTH_ERROR(false, 2004, "게시글 본문의 길이가 올바르지 않습니다."),
     NOT_EXIST_POST(false, 2005, "존재하지 않는 게시글입니다."),
+    NOT_EXIST_COMMENT(false, 2006, "존재하지 않는 댓글입니다."),
 
     /**
      * 3000 : Response 오류
