@@ -22,9 +22,11 @@
         </div>
         <!--좋아요, 싫어요-->
         <div class="p-4" style="font-size: 3.5rem">
-            {{ likeCnt }} <b-icon icon="hand-thumbs-up-fill" class="border rounded p-2 ml-2 mr-2">
+            {{ likeCnt }} <b-icon icon="hand-thumbs-up-fill" class="border rounded p-2 ml-2 mr-2" style="cursor: pointer"
+                @click="handleLikeClick">
             </b-icon>
-            <b-icon icon="hand-thumbs-down" class="border rounded p-2 ml-2 mr-2"></b-icon> {{ unLikeCnt }}
+            <b-icon icon="hand-thumbs-down" class="border rounded p-2 ml-2 mr-2" style="cursor: pointer"
+                @click="handleDisLikeClick"></b-icon> {{ disLikeCnt }}
         </div>
         <!--댓글-->
         <div class="post-detail-contents">
@@ -45,7 +47,7 @@ import Comment from '../../common/components/Comment.vue';
 import CommentWrite from '../../common/components/CommentWrite.vue';
 
 export default {
-    inject: ['postService'],
+    inject: ['postService', 'likeService'],
     components: { // 지역 컴포넌트 선언
         'comment': Comment,
         'comment-write': CommentWrite
@@ -59,9 +61,9 @@ export default {
             commentCnt: 0,
             content: '',
             likeCnt: 0,
-            unLikeCnt: 0,
+            disLikeCnt: 0,
             comments: [],
-            postId: this.$route.params.postId
+            postId: this.$route.params.postId,
         }
     },
     mounted() {
@@ -92,6 +94,9 @@ export default {
                     console.log(error);
                 });
         },
+        /**
+         * 댓글관련 함수
+         */
         handleComments(comments) { // 댓글 작성후 댓글 목록 reload
             this.comments = comments
             console.log(comments)
@@ -110,16 +115,39 @@ export default {
 
             // 삭제할 요소의 인덱스 찾기
             const indexToDelete = this.comments.indexOf(deleteComment);
-            console.log(this.comments)
-            console.log(deleteComment)
-            console.log(commentId)
-
 
             // 인덱스가 -1보다 크다면 해당 요소를 삭제
             if (indexToDelete > -1) {
                 this.comments.splice(indexToDelete, 1);
             }
         },
+        /**
+         * 좋아요 함수
+         */
+        handleLikeClick() {
+            this.createLike("LIKE")
+        },
+        handleDisLikeClick() {
+            this.createLike("UNLIKE")
+        },
+        async createLike(likeType) {
+            const map = new Map()
+            map.set("postId", this.postId)
+            map.set("likeType", likeType)
+
+            await this.likeService.createLike(Object.fromEntries(map))
+                .then(response => {
+                    const code = response.data.code
+                    if (code == 1004)
+                        this.likeCnt++
+                    else if (code == 1005)
+                        this.disLikeCnt++;
+                    else if (code == 2008)
+                        alert("이미 좋아요/싫어요를 누른 게시글입니다.")
+                }).catch(error => {
+                    console.log(error)
+                })
+        }
     },
 }
 </script>
