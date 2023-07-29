@@ -19,7 +19,8 @@
                     <div class="password">
                         <b-form @submit.stop.prevent>
                             <label for="text-password">비밀번호</label>
-                            <b-form-input v-model="password" :state="pwdValidation" type="password" id="text-password"></b-form-input>
+                            <b-form-input v-model="password" :state="pwdValidation" type="password"
+                                id="text-password"></b-form-input>
                             <b-form-invalid-feedback :state="pwdValidation">
                                 비밀번호를 입력해주세요.
                             </b-form-invalid-feedback>
@@ -35,20 +36,32 @@
             <b-form-textarea v-model="content" id="textarea-rows" placeholder="내용을 입력해주세요." cols="3"
                 rows="10"></b-form-textarea>
         </div>
+        <!--해시태그-->
+        <div class="board-contents">
+            <hashtag @update="updateHashTags"></hashtag>
+        </div>
+
         <div class="common-buttons">
             <b-button size="lg" v-on:click="writePost" variant="success">작성</b-button>
         </div>
     </div>
 </template>
+
 <script>
+import Hashtag from '../../common/components/HashTag.vue';
+
 export default {
     inject: ['postService'], // inject를 통한 postService 주입
+    components: {
+        Hashtag: Hashtag
+    },
     data() {
         return {
             writer: '',
             password: '',
             title: '',
-            content: ''
+            content: '',
+            hashtags: [],
         }
     },
     computed: {
@@ -60,8 +73,8 @@ export default {
         }
     },
     methods: {
-        writePost() { // 게시글 수정
-            if(!this.validateWritePost())
+        writePost() { // 게시글 생성
+            if (!this.validateWritePost())
                 return;
 
             const map = new Map()
@@ -69,19 +82,21 @@ export default {
             map.set("password", this.password)
             map.set("title", this.title)
             map.set("content", this.content)
+            map.set("hashtags", this.hashtags)
+            console.log(this.hashtags)
 
             this.postService.writePost(Object.fromEntries(map))
-            .then(response => {
-                alert("게시글이 생성되었습니다.")
-                this.$router.push('/posts')
-                console.log(response)
-            }).catch(error => {
-                console.log(error)
-            })
+                .then(response => {
+                    alert("게시글이 생성되었습니다.")
+                    this.$router.push('/posts')
+                    console.log(response)
+                }).catch(error => {
+                    console.log(error)
+                })
         },
 
         // 글 작성시 검증 메서드
-        validateWritePost(){
+        validateWritePost() {
             const warningAlert = this.$refs.warningAleartRef;
             // 검증 : 작성자 이름 길이 (1 <= x <= 10)
             if (this.writer.length < 1 || this.writer.length > 10) {
@@ -108,6 +123,9 @@ export default {
             }
 
             return true;
+        },
+        updateHashTags(hashtags){
+            this.hashtags = hashtags
         }
     }
 };
