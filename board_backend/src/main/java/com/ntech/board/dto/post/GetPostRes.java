@@ -20,6 +20,7 @@ public class GetPostRes {
     private int viewCount;
     private String writer;
     private String createdAt;
+    private boolean isNew;
 
     private List<GetCommentRes> comments;
 

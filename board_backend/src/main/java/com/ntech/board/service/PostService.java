@@ -18,6 +18,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 import static com.ntech.board.config.page.PageResult.PAGE_SIZE;
@@ -51,7 +58,14 @@ public class PostService {
 
         Page<GetPostRes> postPage = postRepository.findPostPage(pageRequest).map(p -> {
             int likeCnt = likeRepository.countByPostAndLikeType(p, LikeType.LIKE); // 게시글 좋아요 수 카운트
-            return GetPostRes.toDto(p, likeCnt, 0);
+
+            GetPostRes getPostRes = GetPostRes.toDto(p, likeCnt, 0);
+
+            // 3일이내 등록된 게시글인지 확인
+            if(isWithin3DaysFromPost(p.getCreatedAt()))
+                getPostRes.setNew(true);
+
+            return getPostRes;
         });
 
         return new PageResult<>(postPage);
@@ -90,5 +104,24 @@ public class PostService {
         // 검증 : 1 <= content.length <= 500
         if (postReqDto.getContent().length() < 1 || postReqDto.getContent().length() > 500)
             throw new BaseException(PASSWORD_LENGTH_ERROR);
+    }
+
+    // 3일이내인지 확인해주는 함수
+    public boolean isWithin3DaysFromPost(String postCreatedAt){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
+        LocalDateTime localDateTime = LocalDateTime.parse(postCreatedAt, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        ZoneId zoneId = ZoneId.systemDefault(); // 기본 타임존 사용
+        ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
+
+        long postTimeMills = zonedDateTime.toInstant().toEpochMilli();
+        long currentTimeMills = System.currentTimeMillis();
+        long differenceMills = currentTimeMills - postTimeMills;
+
+        // 차이를 일(day)로 변환
+        int differenceDays = (int) (differenceMills / (1000 * 60 * 60 * 24));
+
+        // 3일 이내인지 확인
+        return differenceDays <= 3;
     }
 }
