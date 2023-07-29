@@ -3,8 +3,8 @@
     <div class="overflow-auto">
         <p class="mt-3">Current Page: {{ currentPage }}</p>
 
-        <b-table id="my-table" ref="table" :items="items" :pages="pageList" :current-page="currentPage" 
-        medium style="cursor: pointer" @row-clicked="rowClickHandler"></b-table>
+        <b-table id="my-table" ref="table" :items="items" :pages="pageList" :current-page="currentPage" medium
+            style="cursor: pointer" @row-clicked="rowClickHandler"></b-table>
         <b-pagination-nav v-model="currentPage" :link-gen="linkGen" :total-rows="rows" :per-page="size" align="center"
             :number-of-pages="pageList.length" first-number use-router @change="getPostPagingList"></b-pagination-nav>
     </div>
@@ -49,8 +49,14 @@ export default {
                         const content = result.contents[i]
                         const item = new Object()
                         item.번호 = content.postId
-                        item.제목 = content.title
                         item.작성자 = content.writer
+
+                        // 새로 생성된 게시글이면 제목 앞에 New 추가
+                        if (content.new)
+                            item.제목 = "[New] " + content.title
+                        else
+                            item.제목 = content.title
+
                         item.작성일 = content.createdAt
                         item.좋아요 = content.likeCnt
                         item.조회수 = content.viewCount
@@ -80,9 +86,9 @@ export default {
                 query: { page: pageNum }
             }
         },
-        rowClickHandler(record){ // 테이블 행 클릭시 게시글 상세보기로 이동시키는 함수
+        rowClickHandler(record) { // 테이블 행 클릭시 게시글 상세보기로 이동시키는 함수
             router.push({
-                path: '/post/'+record.번호,
+                path: '/post/' + record.번호,
             });
         }
     }
