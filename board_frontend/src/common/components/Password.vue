@@ -1,4 +1,4 @@
-<!--비밀번호 검증 컴포넌트-->
+<!--댓글 비밀번호 검증 컴포넌트-->
 <template>
     <div>
         <div class="password-content">
@@ -17,7 +17,7 @@
 <script>
 export default {
     inject: ['commentService'],
-    props: ['commentId', 'eventType'],
+    props: ['commentId', 'postId', 'eventType'],
     data() {
         return {
             password: ''
@@ -31,9 +31,13 @@ export default {
                 return;
             }
 
-            if(this.eventType == "modify"){
+            if(this.eventType == "modify"){ // 댓글 수정
                 this.$emit('password-event', "modify", this.password) // Comment 컴포넌트로 전달하기
-            }else if(this.eventType == "delete"){
+            }else if(this.eventType == "delete"){ // 댓글 삭제
+                this.$emit('password-event', "delete", this.password)
+            }else if(this.eventType == "modifyPost"){
+                this.$emit('password-event', "modify", this.password) // Post 컴포넌트로 전달하기
+            }else if(this.eventType == "deletePost"){
                 this.$emit('password-event', "delete", this.password)
             }
         },

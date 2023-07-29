@@ -19,7 +19,7 @@
                     <div class="password">
                         <b-form @submit.stop.prevent>
                             <label for="text-password">비밀번호</label>
-                            <b-form-input v-model="password" :state="pwdValidation" id="text-password"></b-form-input>
+                            <b-form-input v-model="password" :state="pwdValidation" type="password" id="text-password"></b-form-input>
                             <b-form-invalid-feedback :state="pwdValidation">
                                 비밀번호를 입력해주세요.
                             </b-form-invalid-feedback>
@@ -56,11 +56,11 @@ export default {
             return this.writer.length > 0 && this.writer.length <= 10
         },
         pwdValidation() {
-            return this.password.length > 4 && this.password.length < 13
+            return this.password.length >= 4 && this.password.length < 15
         }
     },
     methods: {
-        writePost() {
+        writePost() { // 게시글 수정
             if(!this.validateWritePost())
                 return;
 
@@ -70,8 +70,14 @@ export default {
             map.set("title", this.title)
             map.set("content", this.content)
 
-            const response = this.postService.writePost(Object.fromEntries(map))
-            console.log("response: " + response)
+            this.postService.writePost(Object.fromEntries(map))
+            .then(response => {
+                alert("게시글이 생성되었습니다.")
+                this.$router.push('/posts')
+                console.log(response)
+            }).catch(error => {
+                console.log(error)
+            })
         },
 
         // 글 작성시 검증 메서드

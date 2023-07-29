@@ -31,4 +31,18 @@ export default class postService {
         return $axiosInst
             .get('/post/'+postId);
     }
+    /**
+     * 게시글 비밀번호 검증
+     */
+    validatePostPassword(validatePostReq){
+        return $axiosInst
+            .post('/post/validate', validatePostReq);
+    }
+    /**
+     * 게시글 수정
+     */
+    modifyPost(postId, modifyPostReq){
+        return $axiosInst
+            .patch('/post/modify/'+postId, modifyPostReq);
+    }
 }
