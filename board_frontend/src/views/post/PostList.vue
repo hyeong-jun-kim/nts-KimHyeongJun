@@ -1,10 +1,16 @@
 <!-- 게시글 목록 화면 -->
 <template>
     <div class="overflow-auto">
-        <p class="mt-3">Current Page: {{ currentPage }}</p>
+        <!--글쓰기 버튼-->
+        <div class="d-flex justify-content-start ml-5 mb-3">
+            <b-button variant="primary" @click="goToWritePage">글쓰기</b-button>
+        </div>
 
+        <!--게시글 목록 테이블-->
         <b-table id="my-table" ref="table" :items="items" :pages="pageList" :current-page="currentPage" medium
             style="cursor: pointer" @row-clicked="rowClickHandler"></b-table>
+
+        <!--페이지 이동 버튼-->
         <b-pagination-nav v-model="currentPage" :link-gen="linkGen" :total-rows="rows" :per-page="size" align="center"
             :number-of-pages="pageList.length" first-number use-router @change="getPostPagingList"></b-pagination-nav>
     </div>
@@ -80,16 +86,19 @@ export default {
                     console.log(error);
                 });
         },
-        linkGen(pageNum) { // 버튼 클릭시 페이지 이동시키는 함수
+        linkGen(pageNum) { // 버튼 클릭시 페이지 이동
             return {
                 path: '/posts',
                 query: { page: pageNum }
             }
         },
-        rowClickHandler(record) { // 테이블 행 클릭시 게시글 상세보기로 이동시키는 함수
+        rowClickHandler(record) { // 테이블 행 클릭시 게시글 상세보기로 이동
             router.push({
                 path: '/post/' + record.번호,
             });
+        },
+        goToWritePage(){ // 글쓰기 페이지로 이동
+            this.$router.push('/post/write')
         }
     }
 }
