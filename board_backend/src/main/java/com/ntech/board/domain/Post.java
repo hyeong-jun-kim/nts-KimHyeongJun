@@ -36,4 +36,7 @@ public class Post extends BaseEntity {
     public void addLike(Like like){
         this.likes.add(like);
     }
+    public void increaseViewCount(){
+        this.viewCount++;
+    }
 }
