@@ -24,8 +24,14 @@ public class Like extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    private String ip; // 중복 좋아요 방지용
+    private String ip; // 중복 좋아요 방지용, IPv6 저장
 
     @Enumerated(EnumType.STRING)
     private LikeType likeType;
+
+    public Like(Post post, String ip, LikeType likeType){
+        this.post = post;
+        this.ip = ip;
+        this.likeType = likeType;
+    }
 }

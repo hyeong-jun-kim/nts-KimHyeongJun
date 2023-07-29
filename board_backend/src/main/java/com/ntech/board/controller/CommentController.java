@@ -1,7 +1,6 @@
 package com.ntech.board.controller;
 
 import com.ntech.board.config.response.BaseResponse;
-import com.ntech.board.config.response.BaseResponseStatus;
 import com.ntech.board.dto.comment.*;
 import com.ntech.board.service.CommentService;
 import lombok.RequiredArgsConstructor;
