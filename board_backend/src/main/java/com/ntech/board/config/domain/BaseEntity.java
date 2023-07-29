@@ -34,6 +34,11 @@ public class BaseEntity {
         this.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
+
+    public void remove(){
+        this.status = BaseStatus.INACTIVE;
+    }
+
     protected void setStatus(BaseStatus status){
         this.status = status;
     }

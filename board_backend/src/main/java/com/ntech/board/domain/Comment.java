@@ -38,6 +38,10 @@ public class Comment extends BaseEntity {
 
     private String password;
 
+    public void changeContent(String content){
+        this.content = content;
+    }
+
     public void updateParentComment(Comment comment){
         this.parentComment = comment;
     }

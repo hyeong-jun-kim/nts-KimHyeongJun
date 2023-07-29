@@ -3,21 +3,19 @@ package com.ntech.board.service;
 import com.ntech.board.config.response.BaseException;
 import com.ntech.board.domain.Comment;
 import com.ntech.board.domain.Post;
-import com.ntech.board.dto.comment.CreateCommentReq;
-import com.ntech.board.dto.comment.GetCommentListRes;
-import com.ntech.board.dto.comment.GetCommentRes;
+import com.ntech.board.dto.comment.*;
 import com.ntech.board.repository.CommentRepository;
 import com.ntech.board.repository.PostRepository;
 import com.ntech.board.utils.encrypt.SHA256;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ntech.board.config.response.BaseResponseStatus.NOT_EXIST_COMMENT;
-import static com.ntech.board.config.response.BaseResponseStatus.NOT_EXIST_POST;
+import static com.ntech.board.config.response.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +37,7 @@ public class CommentService {
         commentReq.setPassword(sha256.encrypt(commentReq.getPassword())); // 비밀번호 암호화
         Comment comment = commentReq.toEntity(post);
 
-        // 대 댓글일 경우 parentComment 추가
+        // 게시글 댓글 불러오기
         long parentCommentId = commentReq.getParentCommentId();
         if(parentCommentId != 0){
             Comment parentComment = commentRepository.findById(parentCommentId)
@@ -52,6 +50,49 @@ public class CommentService {
 
         return new GetCommentListRes(getCommentResList);
     }
+
+    // 댓글 비밀번호 검증
+    public void validatePassword(ValidateCommentReq validateCommentReq){
+        Comment comment = commentRepository.findById(validateCommentReq.getCommentId())
+                .orElseThrow(() -> new BaseException(NOT_EXIST_COMMENT));
+
+        checkPassword(comment, validateCommentReq.getPassword());
+    }
+
+    // 댓글 수정하기
+    public void modifyComment(ModifyCommentReq commentReq){
+        Comment comment = commentRepository.findById(commentReq.getCommentId())
+                .orElseThrow(() -> new BaseException(NOT_EXIST_COMMENT));
+
+        checkPassword(comment, commentReq.getPassword()); // 비밀번호 다시한번 검증
+
+        comment.changeContent(commentReq.getContent());
+        commentRepository.save(comment);
+    }
+
+    // 댓글 삭제하기
+    public void deleteComment(DeleteCommentReq commentReq){
+        Comment comment = commentRepository.findById(commentReq.getCommentId())
+                .orElseThrow(() -> new BaseException(NOT_EXIST_COMMENT));
+
+        checkPassword(comment, commentReq.getPassword()); // 비밀번호 다시한번 검증
+
+        comment.remove();
+        commentRepository.save(comment);
+    }
+
+
+    /**
+     * 편의 메서드
+     */
+    // 댓글 비밀번호 검증하기
+    public void checkPassword(Comment comment, String inputPassword){
+        // 비밀번호 검증
+        String encryptPwd = sha256.encrypt(inputPassword);
+        if(!comment.getPassword().equals(encryptPwd))
+            throw new BaseException(NOT_MATCH_PASSWORD);
+    }
+
 
     // 댓글 불러오기
     public List<GetCommentRes> getComments(Post post){
