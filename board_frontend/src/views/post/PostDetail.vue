@@ -11,33 +11,32 @@
                     <b-col class="text-right" cols="1">좋아요: {{ likeCnt }}</b-col>
                 </b-row>
             </b-card>
-        </div>
-        <!--본문-->
-        <div class="post-detail-contents">
+            <!--본문-->
             <b-card class="text-left">
                 <b-card-text>
                     {{ content }}
                 </b-card-text>
             </b-card>
-        </div>
-        <!--좋아요, 싫어요-->
-        <div class="p-4" style="font-size: 3.5rem">
-            {{ likeCnt }} <b-icon icon="hand-thumbs-up-fill" class="border rounded p-2 ml-2 mr-2" style="cursor: pointer"
-                @click="handleLikeClick">
-            </b-icon>
-            <b-icon icon="hand-thumbs-down" class="border rounded p-2 ml-2 mr-2" style="cursor: pointer"
-                @click="handleDisLikeClick"></b-icon> {{ disLikeCnt }}
-        </div>
-        <!--댓글-->
-        <div class="post-detail-contents">
+            <!--좋아요, 싫어요-->
+            <div class="m-5" style="font-size: 3.5rem">
+                {{ likeCnt }} <b-icon icon="hand-thumbs-up-fill" class="border rounded p-2 ml-2 mr-2"
+                    style="cursor: pointer" @click="handleLikeClick">
+                </b-icon>
+                <b-icon icon="hand-thumbs-down" class="border rounded p-2 ml-2 mr-2" style="cursor: pointer"
+                    @click="handleDisLikeClick"></b-icon> {{ disLikeCnt }}
+            </div>
+            <!--수정, 삭제 버튼-->
+            <div class="d-flex justify-content-end mb-2" style="font-size: 3.5rem">
+                <b-button class="mr-2">수정</b-button>
+                <b-button class="ml-2">삭제</b-button>
+            </div>
+            <!--댓글-->
             <div class="mb-3 text-left">
                 전체 댓글 {{ comments.length }}개
             </div>
             <comment v-for="data in comments" @modify-comment="modifyCommentEvent" @delete-comment="deleteCommentEvent"
                 :key="data.comment.commentId" :data="data" />
-        </div>
-        <!--댓글 작성하기-->
-        <div class="post-detail-contents">
+            <!--댓글 작성하기-->
             <comment-write @comments-to-post="handleComments" :postId="postId" />
         </div>
     </div>
