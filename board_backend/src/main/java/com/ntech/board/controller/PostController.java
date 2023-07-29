@@ -17,7 +17,7 @@ public class PostController {
 
     // 게시글 생성
     @PostMapping("/create")
-    public BaseResponse<CreatePostRes> createPost(CreatePostReq dto){
+    public BaseResponse<CreatePostRes> createPost(@RequestBody CreatePostReq dto){
         CreatePostRes response = postService.createPost(dto);
         return new BaseResponse<>(response);
     }
@@ -29,7 +29,7 @@ public class PostController {
         return new BaseResponse<>(postPages);
     }
 
-    // 게시글 상세보기
+    // 게시글 상세보기 (댓글도 불러옴)
     @GetMapping("/{postId}")
     public BaseResponse<GetPostRes> getPost(@PathVariable("postId") long postId){
         GetPostRes postPage = postService.getPost(postId);

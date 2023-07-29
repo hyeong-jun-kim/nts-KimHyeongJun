@@ -30,8 +30,7 @@ public class Post extends BaseEntity {
 
     private int viewCount;
 
-    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name="post_id")
+    @OneToMany(mappedBy = "post", fetch=FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
 
     public void addLike(Like like){

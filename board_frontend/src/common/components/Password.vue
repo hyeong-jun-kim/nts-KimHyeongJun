@@ -1,29 +1,61 @@
+<!--비밀번호 검증 컴포넌트-->
 <template>
-    <div class="password">
-        <b-form @submit.stop.prevent>
-            <label for="text-password">비밀번호</label>
-            <b-form-input v-model="password" :state="validation" id="text-password"></b-form-input>
-            <b-form-invalid-feedback :state="validation">
-                비밀번호를 입력해주세요. 
-            </b-form-invalid-feedback>
-            <!-- <b-form-text id="password-help-block">
-                Your password must be 8-20 characters long, contain letters and numbers, and must not
-                contain spaces, special characters, or emoji.
-            </b-form-text> -->
-        </b-form>
+    <div>
+        <div class="password-content">
+            <b-row class="d-flex justify-content-end p-3">
+                <b-col cols="auto">
+                    <b-form-input v-model="password" type="password" placeholder="비밀번호" size="sm"></b-form-input>
+                </b-col>
+                <b-col cols="auto">
+                    <b-button @click="handleClick">확인</b-button>
+                </b-col>
+            </b-row>
+        </div>
     </div>
 </template>
-  
+
 <script>
 export default {
+    inject: ['commentService'],
+    props: ['commentId', 'eventType'],
     data() {
         return {
             password: ''
         }
     },
-    computed: {
-        validation() {
-            return this.password.length > 4 && this.password.length < 13
+    methods: {
+        async handleClick() {
+            const validateCheck = await this.validatePassword()
+            if (!validateCheck) {
+                alert("비밀번호가 틀립니다.")
+                return;
+            }
+
+            if(this.eventType == "modify"){
+                this.$emit('password-event', "modify", this.password) // Comment 컴포넌트로 전달하기
+            }else if(this.eventType == "delete"){
+                this.$emit('password-event', "delete", this.password)
+            }
+        },
+        async validatePassword() {
+            const map = new Map()
+            map.set("commentId", this.commentId)
+            map.set("password", this.password)
+
+            const check = await this.commentService.validatePassword(Object.fromEntries(map))
+            .then(response => {
+                console.log(response)
+                if(response.data.code == 1003){
+                    console.log("성공")
+                    return true
+                }else
+                    return false
+            }).catch(error => {
+                console.log(error)
+                return false
+            })
+
+            return check
         }
     }
 }

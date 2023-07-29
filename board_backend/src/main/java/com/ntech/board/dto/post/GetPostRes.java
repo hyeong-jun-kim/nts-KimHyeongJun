@@ -1,7 +1,10 @@
 package com.ntech.board.dto.post;
 
 import com.ntech.board.domain.Post;
+import com.ntech.board.dto.comment.GetCommentRes;
 import lombok.*;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,6 +20,8 @@ public class GetPostRes {
     private int viewCount;
     private String writer;
     private String createdAt;
+
+    private List<GetCommentRes> comments;
 
     public static GetPostRes toDto(Post post, int likeCnt, int unLikeCnt){
         return GetPostRes.builder()

@@ -27,7 +27,7 @@ export default {
             currentPage: this.$route.query.page ? this.$route.query.page : 1,
             pageList: [],
             postIdList: [],
-            items: []
+            items: [],
         }
     },
     created() {

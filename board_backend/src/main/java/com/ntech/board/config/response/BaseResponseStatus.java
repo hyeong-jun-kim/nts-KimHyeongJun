@@ -11,6 +11,9 @@ public enum BaseResponseStatus {
      * 1000 : 요청 성공
      */
     SUCCESS(true, 1000, "요청에 성공하였습니다."),
+    COMMENT_MODIFY_SUCCESS(true, 1001, "댓글 수정에 성공하였습니다."),
+    COMMENT_DELETE_SUCCESS(true, 1002, "댓글 삭제에 성공하였습니다."),
+    USER_VALIDATE_SUCCESS(true, 1003, "사용자 인증에 성공하였습니다."),
 
     /**
      * 2000 : Request 오류
@@ -21,6 +24,8 @@ public enum BaseResponseStatus {
     TITLE_LENGTH_ERROR(false, 2003, "제목의 길이가 올바르지 않습니다."),
     CONTENT_LENGTH_ERROR(false, 2004, "게시글 본문의 길이가 올바르지 않습니다."),
     NOT_EXIST_POST(false, 2005, "존재하지 않는 게시글입니다."),
+    NOT_EXIST_COMMENT(false, 2006, "존재하지 않는 댓글입니다."),
+    NOT_MATCH_PASSWORD(false, 2007, "비밀번호가 틀립니다."),
 
     /**
      * 3000 : Response 오류
