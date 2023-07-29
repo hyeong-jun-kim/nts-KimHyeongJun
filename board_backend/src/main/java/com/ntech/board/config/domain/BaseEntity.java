@@ -39,7 +39,7 @@ public class BaseEntity {
         this.status = BaseStatus.INACTIVE;
     }
 
-    protected void setStatus(BaseStatus status){
+    protected void changeStatus(BaseStatus status){
         this.status = status;
     }
 }

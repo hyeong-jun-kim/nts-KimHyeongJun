@@ -1,6 +1,7 @@
 package com.ntech.board.domain;
 
 import com.ntech.board.config.domain.BaseEntity;
+import com.ntech.board.config.status.BaseStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,6 +38,12 @@ public class Comment extends BaseEntity {
     private String content;
 
     private String password;
+
+    @Override
+    public void remove(){
+        super.changeStatus(BaseStatus.INACTIVE);
+        this.content = "삭제된 댓글입니다.";
+    }
 
     public void changeContent(String content){
         this.content = content;

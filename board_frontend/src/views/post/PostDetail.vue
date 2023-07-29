@@ -113,13 +113,7 @@ export default {
                 return data.comment.commentId == commentId
             }));
 
-            // 삭제할 요소의 인덱스 찾기
-            const indexToDelete = this.comments.indexOf(deleteComment);
-
-            // 인덱스가 -1보다 크다면 해당 요소를 삭제
-            if (indexToDelete > -1) {
-                this.comments.splice(indexToDelete, 1);
-            }
+            deleteComment.comment.content = "삭제된 댓글입니다."
         },
         /**
          * 좋아요 함수
