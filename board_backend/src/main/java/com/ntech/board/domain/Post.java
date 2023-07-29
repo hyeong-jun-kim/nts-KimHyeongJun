@@ -39,4 +39,11 @@ public class Post extends BaseEntity {
     public void increaseViewCount(){
         this.viewCount++;
     }
+    public void modifyPost(String title, String content){
+        if(!this.title.equals(title))
+            this.title = title;
+
+        if(!this.content.equals(content))
+            this.content = content;
+    }
 }

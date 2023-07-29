@@ -11,33 +11,30 @@
                     <b-col class="text-right" cols="1">좋아요: {{ likeCnt }}</b-col>
                 </b-row>
             </b-card>
-        </div>
-        <!--본문-->
-        <div class="post-detail-contents">
-            <b-card class="text-left">
-                <b-card-text>
-                    {{ content }}
-                </b-card-text>
-            </b-card>
-        </div>
-        <!--좋아요, 싫어요-->
-        <div class="p-4" style="font-size: 3.5rem">
-            {{ likeCnt }} <b-icon icon="hand-thumbs-up-fill" class="border rounded p-2 ml-2 mr-2" style="cursor: pointer"
-                @click="handleLikeClick">
-            </b-icon>
-            <b-icon icon="hand-thumbs-down" class="border rounded p-2 ml-2 mr-2" style="cursor: pointer"
-                @click="handleDisLikeClick"></b-icon> {{ disLikeCnt }}
-        </div>
-        <!--댓글-->
-        <div class="post-detail-contents">
+            <!--본문-->
+            <b-form-textarea class="ml-2 mt-3" v-model="content" id="textarea-rows" cols="3" rows="10" plaintext :value="text"></b-form-textarea>
+            <!--좋아요, 싫어요-->
+            <div class="m-5" style="font-size: 3.5rem">
+                {{ likeCnt }} <b-icon icon="hand-thumbs-up-fill" class="border rounded p-2 ml-2 mr-2"
+                    style="cursor: pointer" @click="handleLikeClick">
+                </b-icon>
+                <b-icon icon="hand-thumbs-down" class="border rounded p-2 ml-2 mr-2" style="cursor: pointer"
+                    @click="handleDisLikeClick"></b-icon> {{ disLikeCnt }}
+            </div>
+            <!--수정, 삭제 버튼-->
+            <div class="d-flex justify-content-end mb-2" style="font-size: 3.5rem">
+                <b-button class="mr-2" @click="handleModifyClick">수정</b-button>
+                <b-button class="ml-2" @click="handleDeleteClick">삭제</b-button>
+            </div>
+            <!--게시글 삭제시 비밀번호 인증을 위한 컴포넌트 (버튼 누르면 활성화)-->
+            <password v-if="showPassword" :postId="postId" :eventType="eventType" @password-event="handlePasswordEvent"></password>
+            <!--댓글-->
             <div class="mb-3 text-left">
                 전체 댓글 {{ comments.length }}개
             </div>
             <comment v-for="data in comments" @modify-comment="modifyCommentEvent" @delete-comment="deleteCommentEvent"
                 :key="data.comment.commentId" :data="data" />
-        </div>
-        <!--댓글 작성하기-->
-        <div class="post-detail-contents">
+            <!--댓글 작성하기-->
             <comment-write @comments-to-post="handleComments" :postId="postId" />
         </div>
     </div>
@@ -50,7 +47,7 @@ export default {
     inject: ['postService', 'likeService'],
     components: { // 지역 컴포넌트 선언
         'comment': Comment,
-        'comment-write': CommentWrite
+        'comment-write': CommentWrite,
     },
     data() {
         return {
@@ -64,6 +61,8 @@ export default {
             disLikeCnt: 0,
             comments: [],
             postId: this.$route.params.postId,
+            showPassword: false,
+            eventType: ''
         }
     },
     mounted() {
@@ -93,6 +92,21 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
+        },
+        async deletePost(password){ // 게시글 삭제하기
+            const map = new Map()
+            map.set("postId", this.postId)
+            map.set("password", password)
+
+            await this.postService.deletePost(Object.fromEntries(map))
+            .then(response => {
+                if(response.data.code == 1007){
+                    alert("게시글이 삭제되었습니다.")
+                    this.$router.push('/posts') // 게시글 목록으로 이동 
+                }
+            }).catch(error => {
+                console.log(error)
+            })
         },
         /**
          * 댓글관련 함수
@@ -141,6 +155,24 @@ export default {
                 }).catch(error => {
                     console.log(error)
                 })
+        },
+        /**
+         * 게시글 수정, 삭제 관련
+         */
+        handleModifyClick() {
+            this.$router.push('/post/modify/' + this.postId) // 수정 페이지로 이동
+        },
+        handleDeleteClick() {
+            if (!this.showPassword) {
+                this.showPassword = true
+                this.eventType = "deletePost"
+            } else
+                this.showPassword = false
+        },
+        handlePasswordEvent(eventType, password){
+            if(eventType == "delete"){
+                this.deletePost(password)
+            }
         }
     },
 }
