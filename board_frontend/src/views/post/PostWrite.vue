@@ -64,14 +64,14 @@ export default {
             if(!this.validateWritePost())
                 return;
 
-            const form = new FormData();
-            form.append("writer", this.writer);
-            form.append("password", this.password);
-            form.append("title", this.title);
-            form.append("content", this.content);
+            const form = new FormData()
+            form.append("writer", this.writer)
+            form.append("password", this.password)
+            form.append("title", this.title)
+            form.append("content", this.content)
 
             const response = this.postService.writePost(form)
-            console.log("response: " + response);
+            console.log("response: " + response)
         },
 
         // 글 작성시 검증 메서드

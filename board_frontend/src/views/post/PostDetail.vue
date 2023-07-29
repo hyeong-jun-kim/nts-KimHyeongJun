@@ -8,7 +8,7 @@
                     <b-col cols="5">닉네임: {{ writer }}</b-col>
                     <b-col class="text-left" cols="10">작성일지: {{ createdAt }}</b-col>
                     <b-col class="text-right" cols="1">조회수: {{ viewCnt }}</b-col>
-                    <b-col class="text-right" cols="1">좋아요: {{ commentList.length }}</b-col>
+                    <b-col class="text-right" cols="1">좋아요: {{ likeCnt }}</b-col>
                 </b-row>
             </b-card>
         </div>
@@ -29,35 +29,26 @@
         <!--댓글-->
         <div class="post-detail-contents">
             <div class="mb-3 text-left">
-                전체 댓글 2개
+                전체 댓글 {{ comments.length }}개
             </div>
-            <b-card>
-                <b-row align-h="between">
-                    <b-col cols="1">닉네임</b-col>
-                    <b-col class="text-left" cols="9">내용</b-col>
-                    <b-col cols="1">작성일지</b-col>
-                </b-row>
-            </b-card>
+            <comment v-for="data in comments" :key="data.comment.commentId" :data="data" />
         </div>
         <!--댓글 작성하기-->
         <div class="post-detail-contents">
-            <b-card>
-                <b-row>
-                    <b-form-input class="col-2" v-model="text" type="text" placeholder="아이디"></b-form-input>
-                    <b-form-input class="col-2" v-model="text" type="password" placeholder="비밀번호"></b-form-input>
-                </b-row>
-                <b-row>
-                    <b-form-textarea id="textarea" v-model="text" placeholder="댓글을 작성해보세요!" rows="3" max-rows="3"
-                        style="resize: none"></b-form-textarea>
-                </b-row>
-                <b-button class="mt-3" variant="primary">등록</b-button>
-            </b-card>
+            <comment-write @comments-to-post="handleComments" :postId="postId"/>
         </div>
     </div>
 </template>
 <script>
+import Comment from '../../common/components/Comment.vue';
+import CommentWrite from '../../common/components/CommentWrite.vue';
+
 export default {
     inject: ['postService'],
+    components: { // 지역 컴포넌트 선언
+        'comment': Comment,
+        'comment-write': CommentWrite
+    },
     data() {
         return {
             postTitle: '',
@@ -68,7 +59,7 @@ export default {
             content: '',
             likeCnt: 0,
             unLikeCnt: 0,
-            commentList: [],
+            comments: [],
             postId: this.$route.params.postId
         }
     },
@@ -81,6 +72,7 @@ export default {
                     const result = response.data.result;
 
                     // 게시글 정보 채우기
+                    this.postId = result.postId
                     this.postTitle = result.title
                     this.writer = result.writer
                     this.createdAt = result.createdAt
@@ -89,11 +81,18 @@ export default {
                     this.likeCnt = result.likeCnt
                     this.unLikeCnt = result.unLikeCnt
 
+                    // 댓글 목록 받아오기
+                    this.comments = result.comments
+
                     console.log(this.postTitle)
                 })
                 .catch(error => {
                     console.log(error);
                 });
+        },
+        handleComments(comments){ // 게시글 작성후 댓글 목록 reload
+            this.comments = comments
+            console.log(comments)
         }
     }
 }
