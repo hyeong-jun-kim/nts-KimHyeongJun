@@ -2,6 +2,7 @@ package com.ntech.board.controller;
 
 import com.ntech.board.config.response.BaseResponse;
 import com.ntech.board.dto.comment.CreateCommentReq;
+import com.ntech.board.dto.comment.GetCommentListRes;
 import com.ntech.board.dto.comment.GetCommentRes;
 import com.ntech.board.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,8 @@ public class CommentController {
 
     // 댓글 생성
     @PostMapping("/create")
-    public BaseResponse<List<GetCommentRes>> createComment(@RequestBody CreateCommentReq commentReq){
-        List<GetCommentRes> commentResList = commentService.createComment(commentReq);
+    public BaseResponse<GetCommentListRes> createComment(@RequestBody CreateCommentReq commentReq){
+        GetCommentListRes commentResList = commentService.createComment(commentReq);
         return new BaseResponse<>(commentResList);
     }
  }

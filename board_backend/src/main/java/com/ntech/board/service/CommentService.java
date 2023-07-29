@@ -4,6 +4,7 @@ import com.ntech.board.config.response.BaseException;
 import com.ntech.board.domain.Comment;
 import com.ntech.board.domain.Post;
 import com.ntech.board.dto.comment.CreateCommentReq;
+import com.ntech.board.dto.comment.GetCommentListRes;
 import com.ntech.board.dto.comment.GetCommentRes;
 import com.ntech.board.repository.CommentRepository;
 import com.ntech.board.repository.PostRepository;
@@ -28,7 +29,7 @@ public class CommentService {
     private final SHA256 sha256;
 
     // 댓글 생성
-    public List<GetCommentRes> createComment(CreateCommentReq commentReq){
+    public GetCommentListRes createComment(CreateCommentReq commentReq){
         long postId = commentReq.getPostId();
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new BaseException(NOT_EXIST_POST));
@@ -47,8 +48,9 @@ public class CommentService {
         }
 
         commentRepository.save(comment);
+        List<GetCommentRes> getCommentResList = getComments(post);
 
-        return getComments(post);
+        return new GetCommentListRes(getCommentResList);
     }
 
     // 댓글 불러오기
