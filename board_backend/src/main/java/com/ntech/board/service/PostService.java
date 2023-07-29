@@ -4,10 +4,14 @@ import com.ntech.board.config.page.PageResult;
 import com.ntech.board.config.response.BaseException;
 import com.ntech.board.config.response.BaseResponseStatus;
 import com.ntech.board.config.type.LikeType;
+import com.ntech.board.domain.HashTag;
 import com.ntech.board.domain.Post;
+import com.ntech.board.domain.PostHashTag;
 import com.ntech.board.dto.comment.GetCommentRes;
 import com.ntech.board.dto.post.*;
+import com.ntech.board.repository.HashTagRepository;
 import com.ntech.board.repository.LikeRepository;
+import com.ntech.board.repository.PostHashTagRepository;
 import com.ntech.board.repository.PostRepository;
 import com.ntech.board.utils.encrypt.SHA256;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +39,8 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
+    private final HashTagRepository hashTagRepository;
+    private final PostHashTagRepository postHashTagRepository;
 
     private final SHA256 sha256;
 
@@ -46,6 +52,10 @@ public class PostService {
         Post post = postReq.toEntity(encryptPassword);
 
         postRepository.save(post);
+
+        // 해시태그 생성
+        createHashTags(post, postReq.getHashtags());
+
         return CreatePostRes.toDto(post);
     }
 
@@ -166,5 +176,16 @@ public class PostService {
     public boolean validatePassword(Post post, String inputPwd) {
         String encryptPwd = sha256.encrypt(inputPwd);
         return post.getPassword().equals(encryptPwd);
+    }
+
+    // 해시태그 생성
+    public void createHashTags(Post post, List<String> hashtags) {
+        if (hashtags == null)
+            return;
+
+        hashtags.stream()
+                .map(hashtag -> hashTagRepository.findByName(hashtag)
+                        .orElseGet(() -> hashTagRepository.save(new HashTag(hashtag)))) // 해시태그 존재 안하면 새로 생성
+                .forEach(hashtag -> postHashTagRepository.save(new PostHashTag(post, hashtag))); // 게시물 - 해시태그 매핑
     }
 }
