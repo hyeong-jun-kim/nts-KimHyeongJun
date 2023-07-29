@@ -36,11 +36,10 @@ import static com.ntech.board.config.response.BaseResponseStatus.*;
 @Transactional
 public class PostService {
     private final CommentService commentService;
+    private final HashTagService hashTagService;
 
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
-    private final HashTagRepository hashTagRepository;
-    private final PostHashTagRepository postHashTagRepository;
 
     private final SHA256 sha256;
 
@@ -54,7 +53,7 @@ public class PostService {
         postRepository.save(post);
 
         // 해시태그 생성
-        createHashTags(post, postReq.getHashtags());
+        hashTagService.createHashTags(post, postReq.getHashtags());
 
         return CreatePostRes.toDto(post);
     }
@@ -120,6 +119,10 @@ public class PostService {
         List<GetCommentRes> comments = commentService.getComments(post);
         postRes.setComments(comments);
 
+        // 해시태그 불러오기
+        List<String> hashTags = hashTagService.getHashTags(post);
+        postRes.setHashtags(hashTags);
+
         return postRes;
     }
 
@@ -176,16 +179,5 @@ public class PostService {
     public boolean validatePassword(Post post, String inputPwd) {
         String encryptPwd = sha256.encrypt(inputPwd);
         return post.getPassword().equals(encryptPwd);
-    }
-
-    // 해시태그 생성
-    public void createHashTags(Post post, List<String> hashtags) {
-        if (hashtags == null)
-            return;
-
-        hashtags.stream()
-                .map(hashtag -> hashTagRepository.findByName(hashtag)
-                        .orElseGet(() -> hashTagRepository.save(new HashTag(hashtag)))) // 해시태그 존재 안하면 새로 생성
-                .forEach(hashtag -> postHashTagRepository.save(new PostHashTag(post, hashtag))); // 게시물 - 해시태그 매핑
     }
 }
