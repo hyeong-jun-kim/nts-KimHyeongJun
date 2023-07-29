@@ -14,6 +14,8 @@ public enum BaseResponseStatus {
     COMMENT_MODIFY_SUCCESS(true, 1001, "댓글 수정에 성공하였습니다."),
     COMMENT_DELETE_SUCCESS(true, 1002, "댓글 삭제에 성공하였습니다."),
     USER_VALIDATE_SUCCESS(true, 1003, "사용자 인증에 성공하였습니다."),
+    CREATE_LIKE_SUCCESS(true, 1004, "좋아요가 생성되었습니다."),
+    CREATE_DISLIKE_SUCCESS(true, 1005, "싫어요가 생성되었습니다."),
 
     /**
      * 2000 : Request 오류
@@ -26,6 +28,7 @@ public enum BaseResponseStatus {
     NOT_EXIST_POST(false, 2005, "존재하지 않는 게시글입니다."),
     NOT_EXIST_COMMENT(false, 2006, "존재하지 않는 댓글입니다."),
     NOT_MATCH_PASSWORD(false, 2007, "비밀번호가 틀립니다."),
+    EXIST_LIKE_IP(false, 2008, "이미 좋아요를 누른 게시글입니다."),
 
     /**
      * 3000 : Response 오류

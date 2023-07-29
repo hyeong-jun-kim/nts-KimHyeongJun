@@ -11,6 +11,7 @@ import WarningAlert from './common/components/WarningAlert'
 import axios from 'axios'
 import postService from './services/postService'
 import commentService from './services/commentService'
+import likeService from './services/likeService'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -35,6 +36,7 @@ new Vue({
   provide : {
     postService: new postService,  // 부모 컴포넌트에서 설정
     commentService: new commentService,
+    likeService: new likeService,
   }
 }).$mount('#app')
 
