@@ -1,6 +1,7 @@
 package com.ntech.board.service;
 
 import com.ntech.board.config.response.BaseException;
+import com.ntech.board.config.status.BaseStatus;
 import com.ntech.board.domain.Comment;
 import com.ntech.board.domain.Post;
 import com.ntech.board.dto.comment.*;
@@ -76,7 +77,6 @@ public class CommentService {
                 .orElseThrow(() -> new BaseException(NOT_EXIST_COMMENT));
 
         checkPassword(comment, commentReq.getPassword()); // 비밀번호 다시한번 검증
-
         comment.remove();
         commentRepository.save(comment);
     }
@@ -96,7 +96,7 @@ public class CommentService {
 
     // 댓글 불러오기
     public List<GetCommentRes> getComments(Post post){
-        List<Comment> parentComment = commentRepository.getCommentsByPost(post);
-        return parentComment.stream().map(GetCommentRes::toDto).collect(Collectors.toList());
+        List<Comment> parentComments = commentRepository.getCommentsByPost(post);
+        return parentComments.stream().map(GetCommentRes::toDto).collect(Collectors.toList());
     }
 }

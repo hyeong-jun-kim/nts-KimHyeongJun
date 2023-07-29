@@ -4,7 +4,7 @@
         <p class="mt-3">Current Page: {{ currentPage }}</p>
 
         <b-table id="my-table" ref="table" :items="items" :pages="pageList" :current-page="currentPage" 
-        medium @row-clicked="rowClickHandler"></b-table>
+        medium style="cursor: pointer" @row-clicked="rowClickHandler"></b-table>
         <b-pagination-nav v-model="currentPage" :link-gen="linkGen" :total-rows="rows" :per-page="size" align="center"
             :number-of-pages="pageList.length" first-number use-router @change="getPostPagingList"></b-pagination-nav>
     </div>
@@ -53,7 +53,7 @@ export default {
                         item.작성자 = content.writer
                         item.작성일 = content.createdAt
                         item.좋아요 = content.likeCnt
-                        item.조회수 = content.likeCnt
+                        item.조회수 = content.viewCount
 
                         this.items[i] = item
                         this.postIdList[i] = content.postId
