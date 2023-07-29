@@ -12,11 +12,7 @@
                 </b-row>
             </b-card>
             <!--본문-->
-            <b-card class="text-left">
-                <b-card-text>
-                    {{ content }}
-                </b-card-text>
-            </b-card>
+            <b-form-textarea class="ml-2 mt-3" v-model="content" id="textarea-rows" cols="3" rows="10" plaintext :value="text"></b-form-textarea>
             <!--좋아요, 싫어요-->
             <div class="m-5" style="font-size: 3.5rem">
                 {{ likeCnt }} <b-icon icon="hand-thumbs-up-fill" class="border rounded p-2 ml-2 mr-2"
@@ -30,10 +26,8 @@
                 <b-button class="mr-2" @click="handleModifyClick">수정</b-button>
                 <b-button class="ml-2" @click="handleDeleteClick">삭제</b-button>
             </div>
-            <!--게시글 수정, 삭제시 비밀번호 인증을 위한 컴포넌트 (버튼 누르면 활성화)-->
+            <!--게시글 삭제시 비밀번호 인증을 위한 컴포넌트 (버튼 누르면 활성화)-->
             <password v-if="showPassword" :postId="postId" :eventType="eventType" @password-event="handlePasswordEvent"></password>
-            <!-- <password v-if="showPassword" :commentId="data.comment.commentId" :eventType="eventType"
-                @password-event="handlePasswordEvent"></password> -->
             <!--댓글-->
             <div class="mb-3 text-left">
                 전체 댓글 {{ comments.length }}개
@@ -67,7 +61,6 @@ export default {
             disLikeCnt: 0,
             comments: [],
             postId: this.$route.params.postId,
-            password: null,
             showPassword: false,
             eventType: ''
         }
@@ -99,6 +92,21 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
+        },
+        async deletePost(password){ // 게시글 삭제하기
+            const map = new Map()
+            map.set("postId", this.postId)
+            map.set("password", password)
+
+            await this.postService.deletePost(Object.fromEntries(map))
+            .then(response => {
+                if(response.data.code == 1007){
+                    alert("게시글이 삭제되었습니다.")
+                    this.$router.push('/posts') // 게시글 목록으로 이동 
+                }
+            }).catch(error => {
+                console.log(error)
+            })
         },
         /**
          * 댓글관련 함수
@@ -161,9 +169,9 @@ export default {
             } else
                 this.showPassword = false
         },
-        handlePasswordEvent(eventType){
+        handlePasswordEvent(eventType, password){
             if(eventType == "delete"){
-                console.log("잇다 지워야댐")
+                this.deletePost(password)
             }
         }
     },

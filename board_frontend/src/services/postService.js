@@ -34,7 +34,7 @@ export default class postService {
     /**
      * 게시글 비밀번호 검증
      */
-    validatePostPassword(validatePostReq){
+    validatePassword(validatePostReq){
         return $axiosInst
             .post('/post/validate', validatePostReq);
     }
@@ -44,5 +44,12 @@ export default class postService {
     modifyPost(postId, modifyPostReq){
         return $axiosInst
             .patch('/post/modify/'+postId, modifyPostReq);
+    }
+    /**
+     * 게시글 삭제
+     */
+    deletePost(deletePostReq){
+        return $axiosInst
+            .post('/post/delete', deletePostReq);
     }
 }

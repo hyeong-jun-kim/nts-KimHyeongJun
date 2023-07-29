@@ -16,7 +16,7 @@
 
 <script>
 export default {
-    inject: ['commentService'],
+    inject: ['postService', 'commentService'],
     props: ['commentId', 'postId', 'eventType'],
     data() {
         return {
@@ -25,39 +25,72 @@ export default {
     },
     methods: {
         async handleClick() {
-            const validateCheck = await this.validatePassword()
-            if (!validateCheck) {
-                alert("비밀번호가 틀립니다.")
-                return;
+            console.log(this.commentId)
+            console.log(this.postId)
+            console.log(this.eventType)
+
+            if (this.commentId != null) { // 댓글 비밀번호 검증    
+                const validateCheck = await this.validateCommentPassword()
+                if (!validateCheck) {
+                    alert("비밀번호가 틀립니다.")
+                    return;
+                }
+                if (this.eventType == "modifyComment") {
+                    this.$emit('password-event', "modify", this.password) // Comment 컴포넌트로 전달하기
+                } else if (this.eventType == "deleteComment") {
+                    this.$emit('password-event', "delete", this.password)
+                }
+
+            } else if (this.postId != null) { // 게시글 비밀번호 검증
+                const validateCheck = await this.validatePostPassword()
+                if (!validateCheck) {
+                    alert("비밀번호가 틀립니다.")
+                    return;
+                }
+
+                if (this.eventType == "modifyPost") {
+                    this.$emit('password-event', "modify", this.password) // Post 컴포넌트로 전달하기
+                } else if (this.eventType == "deletePost") {
+                    this.$emit('password-event', "delete", this.password)
+                }
             }
 
-            if(this.eventType == "modify"){ // 댓글 수정
-                this.$emit('password-event', "modify", this.password) // Comment 컴포넌트로 전달하기
-            }else if(this.eventType == "delete"){ // 댓글 삭제
-                this.$emit('password-event', "delete", this.password)
-            }else if(this.eventType == "modifyPost"){
-                this.$emit('password-event', "modify", this.password) // Post 컴포넌트로 전달하기
-            }else if(this.eventType == "deletePost"){
-                this.$emit('password-event', "delete", this.password)
-            }
         },
-        async validatePassword() {
+        async validateCommentPassword() {
             const map = new Map()
             map.set("commentId", this.commentId)
             map.set("password", this.password)
 
             const check = await this.commentService.validatePassword(Object.fromEntries(map))
-            .then(response => {
-                console.log(response)
-                if(response.data.code == 1003){
-                    console.log("성공")
-                    return true
-                }else
+                .then(response => {
+                    console.log(response)
+                    if (response.data.code == 1003) {
+                        return true
+                    } else
+                        return false
+                }).catch(error => {
+                    console.log(error)
                     return false
-            }).catch(error => {
-                console.log(error)
-                return false
-            })
+                })
+
+            return check
+        },
+        async validatePostPassword() {
+            const map = new Map()
+            map.set("postId", this.postId)
+            map.set("password", this.password)
+
+            const check = await this.postService.validatePassword(Object.fromEntries(map))
+                .then(response => {
+                    console.log(response)
+                    if (response.data.code == 1003) {
+                        return true
+                    } else
+                        return false
+                }).catch(error => {
+                    console.log(error)
+                    return false
+                })
 
             return check
         }

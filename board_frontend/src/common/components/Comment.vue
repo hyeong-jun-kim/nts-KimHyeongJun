@@ -59,14 +59,14 @@ export default {
     methods: {
         modifyEvent() {
             if (!this.showPassword) {
-                this.eventType = "modify"
+                this.eventType = "modifyComment"
                 this.showPassword = true
             } else
                 this.showPassword = false
         },
         deleteEvent() {
             if (!this.showPassword) {
-                this.eventType = "delete"
+                this.eventType = "deleteComment"
                 this.showPassword = true;
             } else
                 this.showPassword = false
