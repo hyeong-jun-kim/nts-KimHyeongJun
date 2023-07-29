@@ -79,6 +79,9 @@ public class PostService {
         int likeCnt = likeRepository.countByPostAndLikeType(post, LikeType.LIKE);
         int unLikeCnt = likeRepository.countByPostAndLikeType(post, LikeType.UNLIKE);
 
+        // 게시글 상세보기시 조회수 1 증가
+        post.increaseViewCount();
+
         GetPostRes postRes = GetPostRes.toDto(post, likeCnt, unLikeCnt);
 
         List<GetCommentRes> comments = commentService.getComments(post);
