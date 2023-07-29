@@ -68,7 +68,6 @@ public class CommentService {
         checkPassword(comment, commentReq.getPassword()); // 비밀번호 다시한번 검증
 
         comment.changeContent(commentReq.getContent());
-        commentRepository.save(comment);
     }
 
     // 댓글 삭제하기
@@ -78,7 +77,6 @@ public class CommentService {
 
         checkPassword(comment, commentReq.getPassword()); // 비밀번호 다시한번 검증
         comment.remove();
-        commentRepository.save(comment);
     }
 
 

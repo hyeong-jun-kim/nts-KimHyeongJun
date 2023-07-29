@@ -16,6 +16,8 @@ public enum BaseResponseStatus {
     USER_VALIDATE_SUCCESS(true, 1003, "사용자 인증에 성공하였습니다."),
     CREATE_LIKE_SUCCESS(true, 1004, "좋아요가 생성되었습니다."),
     CREATE_DISLIKE_SUCCESS(true, 1005, "싫어요가 생성되었습니다."),
+    POST_MODIFY_SUCCESS(true, 1006, "게시글이 수정되었습니다."),
+    POST_DELETE_SUCCESS(true, 1007, "게시글이 삭제되었습니다."),
 
     /**
      * 2000 : Request 오류

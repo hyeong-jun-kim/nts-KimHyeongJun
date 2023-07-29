@@ -2,12 +2,11 @@ package com.ntech.board.service;
 
 import com.ntech.board.config.page.PageResult;
 import com.ntech.board.config.response.BaseException;
+import com.ntech.board.config.response.BaseResponseStatus;
 import com.ntech.board.config.type.LikeType;
 import com.ntech.board.domain.Post;
 import com.ntech.board.dto.comment.GetCommentRes;
-import com.ntech.board.dto.post.CreatePostReq;
-import com.ntech.board.dto.post.CreatePostRes;
-import com.ntech.board.dto.post.GetPostRes;
+import com.ntech.board.dto.post.*;
 import com.ntech.board.repository.LikeRepository;
 import com.ntech.board.repository.PostRepository;
 import com.ntech.board.utils.encrypt.SHA256;
@@ -18,13 +17,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 import static com.ntech.board.config.page.PageResult.PAGE_SIZE;
@@ -42,14 +39,40 @@ public class PostService {
     private final SHA256 sha256;
 
     // 게시글 생성하기
-    public CreatePostRes createPost(CreatePostReq postReqDto) {
-        validateCreateBoard(postReqDto); // 게시글 생성 검증
+    public CreatePostRes createPost(CreatePostReq postReq) {
+        validateCreateBoard(postReq); // 게시글 생성 검증
 
-        String encryptPassword = sha256.encrypt(postReqDto.getPassword());
-        Post post = postReqDto.toEntity(encryptPassword);
+        String encryptPassword = sha256.encrypt(postReq.getPassword());
+        Post post = postReq.toEntity(encryptPassword);
 
         postRepository.save(post);
         return CreatePostRes.toDto(post);
+    }
+
+    // 게시글 수정하기
+    public BaseResponseStatus modifyPost(long postId, CreatePostReq postReq) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new BaseException(NOT_EXIST_POST));
+
+        // 비밀번호 검증
+        if (!validatePassword(post, postReq.getPassword()))
+            throw new BaseException(NOT_MATCH_PASSWORD);
+
+        post.modifyPost(postReq.getTitle(), postReq.getContent());
+        return POST_MODIFY_SUCCESS;
+    }
+
+    // 게시글 삭제하기
+    public BaseResponseStatus deletePost(DeletePostReq postReq) {
+        Post post = postRepository.findById(postReq.getPostId())
+                .orElseThrow(() -> new BaseException(NOT_EXIST_POST));
+
+        // 비밀번호 검증
+        if (!validatePassword(post, postReq.getPassword()))
+            throw new BaseException(NOT_MATCH_PASSWORD);
+
+        post.remove();
+        return POST_DELETE_SUCCESS;
     }
 
     // 게시글 목록 불러오기 (페이징 처리)
@@ -62,7 +85,7 @@ public class PostService {
             GetPostRes getPostRes = GetPostRes.toDto(p, likeCnt, 0);
 
             // 3일이내 등록된 게시글인지 확인
-            if(isWithin3DaysFromPost(p.getCreatedAt()))
+            if (isWithin3DaysFromPost(p.getCreatedAt()))
                 getPostRes.setNew(true);
 
             return getPostRes;
@@ -72,7 +95,7 @@ public class PostService {
     }
 
     // 게시글 상세 보기
-    public GetPostRes getPost(long postId){
+    public GetPostRes getPost(long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new BaseException(NOT_EXIST_POST));
 
@@ -88,6 +111,17 @@ public class PostService {
         postRes.setComments(comments);
 
         return postRes;
+    }
+
+    // 게시글 비밀번호 검증 (조회용)
+    public BaseResponseStatus validatePostPassword(ValidatePostReq postReq) {
+        Post post = postRepository.findById(postReq.getPostId())
+                .orElseThrow(() -> new BaseException(NOT_EXIST_POST));
+
+        if (!validatePassword(post, postReq.getPassword()))
+            throw new BaseException(NOT_MATCH_PASSWORD);
+
+        return USER_VALIDATE_SUCCESS;
     }
 
     // 게시글 검증 함수
@@ -110,7 +144,7 @@ public class PostService {
     }
 
     // 3일이내인지 확인해주는 함수
-    public boolean isWithin3DaysFromPost(String postCreatedAt){
+    public boolean isWithin3DaysFromPost(String postCreatedAt) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
         LocalDateTime localDateTime = LocalDateTime.parse(postCreatedAt, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
@@ -126,5 +160,11 @@ public class PostService {
 
         // 3일 이내인지 확인
         return differenceDays <= 3;
+    }
+
+    // 게시글 비밀번호 검증
+    public boolean validatePassword(Post post, String inputPwd) {
+        String encryptPwd = sha256.encrypt(inputPwd);
+        return post.getPassword().equals(encryptPwd);
     }
 }
