@@ -31,11 +31,12 @@
             <div class="mb-3 text-left">
                 전체 댓글 {{ comments.length }}개
             </div>
-            <comment v-for="data in comments" :key="data.comment.commentId" :data="data" />
+            <comment v-for="data in comments" @modify-comment="modifyCommentEvent" @delete-comment="deleteCommentEvent"
+                :key="data.comment.commentId" :data="data" />
         </div>
         <!--댓글 작성하기-->
         <div class="post-detail-contents">
-            <comment-write @comments-to-post="handleComments" :postId="postId"/>
+            <comment-write @comments-to-post="handleComments" :postId="postId" />
         </div>
     </div>
 </template>
@@ -63,9 +64,10 @@ export default {
             postId: this.$route.params.postId
         }
     },
-    created() {
+    mounted() {
         this.getPost(this.postId)
-    }, methods: {
+    },
+    methods: {
         async getPost(postId) { // 게시글 상세정보 받아오기
             await this.postService.getPost(postId)
                 .then(response => {
@@ -84,16 +86,40 @@ export default {
                     // 댓글 목록 받아오기
                     this.comments = result.comments
 
-                    console.log(this.postTitle)
+                    console.log(this.comments)
                 })
                 .catch(error => {
                     console.log(error);
                 });
         },
-        handleComments(comments){ // 게시글 작성후 댓글 목록 reload
+        handleComments(comments) { // 댓글 작성후 댓글 목록 reload
             this.comments = comments
             console.log(comments)
-        }
-    }
+        },
+        modifyCommentEvent(commentId, editedContent) {
+            const modifyComment = this.comments.find((data => {
+                return data.comment.commentId == commentId
+            }));
+
+            modifyComment.comment.content = editedContent
+        },
+        deleteCommentEvent(commentId) {
+            const deleteComment = this.comments.find((data => {
+                return data.comment.commentId == commentId
+            }));
+
+            // 삭제할 요소의 인덱스 찾기
+            const indexToDelete = this.comments.indexOf(deleteComment);
+            console.log(this.comments)
+            console.log(deleteComment)
+            console.log(commentId)
+
+
+            // 인덱스가 -1보다 크다면 해당 요소를 삭제
+            if (indexToDelete > -1) {
+                this.comments.splice(indexToDelete, 1);
+            }
+        },
+    },
 }
 </script>

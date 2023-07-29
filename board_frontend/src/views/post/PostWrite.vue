@@ -64,13 +64,13 @@ export default {
             if(!this.validateWritePost())
                 return;
 
-            const form = new FormData()
-            form.append("writer", this.writer)
-            form.append("password", this.password)
-            form.append("title", this.title)
-            form.append("content", this.content)
+            const map = new Map()
+            map.set("writer", this.writer)
+            map.set("password", this.password)
+            map.set("title", this.title)
+            map.set("content", this.content)
 
-            const response = this.postService.writePost(form)
+            const response = this.postService.writePost(Object.fromEntries(map))
             console.log("response: " + response)
         },
 
