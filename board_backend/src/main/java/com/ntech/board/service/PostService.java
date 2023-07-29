@@ -4,10 +4,14 @@ import com.ntech.board.config.page.PageResult;
 import com.ntech.board.config.response.BaseException;
 import com.ntech.board.config.response.BaseResponseStatus;
 import com.ntech.board.config.type.LikeType;
+import com.ntech.board.domain.HashTag;
 import com.ntech.board.domain.Post;
+import com.ntech.board.domain.PostHashTag;
 import com.ntech.board.dto.comment.GetCommentRes;
 import com.ntech.board.dto.post.*;
+import com.ntech.board.repository.HashTagRepository;
 import com.ntech.board.repository.LikeRepository;
+import com.ntech.board.repository.PostHashTagRepository;
 import com.ntech.board.repository.PostRepository;
 import com.ntech.board.utils.encrypt.SHA256;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +36,7 @@ import static com.ntech.board.config.response.BaseResponseStatus.*;
 @Transactional
 public class PostService {
     private final CommentService commentService;
+    private final HashTagService hashTagService;
 
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
@@ -46,6 +51,10 @@ public class PostService {
         Post post = postReq.toEntity(encryptPassword);
 
         postRepository.save(post);
+
+        // 해시태그 생성
+        hashTagService.createHashTags(post, postReq.getHashtags());
+
         return CreatePostRes.toDto(post);
     }
 
@@ -109,6 +118,10 @@ public class PostService {
 
         List<GetCommentRes> comments = commentService.getComments(post);
         postRes.setComments(comments);
+
+        // 해시태그 불러오기
+        List<String> hashTags = hashTagService.getHashTags(post);
+        postRes.setHashtags(hashTags);
 
         return postRes;
     }

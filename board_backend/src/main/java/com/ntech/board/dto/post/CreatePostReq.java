@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -16,6 +18,8 @@ public class CreatePostReq {
 
     private String content;
     private String title;
+
+    private List<String> hashtags;
 
     public Post toEntity(String encryptPwd){
         return Post.builder()

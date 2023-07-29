@@ -23,6 +23,7 @@ public class GetPostRes {
     private boolean isNew;
 
     private List<GetCommentRes> comments;
+    private List<String> hashtags;
 
     public static GetPostRes toDto(Post post, int likeCnt, int unLikeCnt){
         return GetPostRes.builder()
