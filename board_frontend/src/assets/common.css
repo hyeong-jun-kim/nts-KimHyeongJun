@@ -1,0 +1,42 @@
+.writer{
+    width: 200px;
+    margin: auto;
+}
+
+.password{
+    width: 200px;
+    margin: auto;
+}
+
+.board-contents {
+    padding: 12px 40px;
+    border-bottom: 1px solid #eee;
+}
+
+.common-buttons {
+    padding: 30px;
+}
+
+.user-container {
+    padding: 10px 40px;
+}
+
+.alert {
+    padding: 10px 40px;
+}
+
+.post-detail-contents {
+    padding: 12px 200px;
+}
+
+.row-content {
+    padding: 12px 0px;
+}
+
+.text-no-wrap {
+    white-space: nowrap;
+}
+
+.comment-content {
+    border-bottom: 1px solid rgba(184, 177, 177, 0.685)
+}
