@@ -73,7 +73,7 @@ export default {
                 .then(response => {
                     if (response.data.code == 1006) {
                         alert("정상적으로 수정되었습니다.")
-                        this.$router.push('/posts') // 게시글 목록으로 이동 
+                        this.$router.push('/') // 게시글 목록으로 이동 
                     } else if (response.data.code == 2007) {
                         alert("비밀번호가 틀립니다.")
                     }

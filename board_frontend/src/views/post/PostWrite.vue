@@ -88,7 +88,7 @@ export default {
             this.postService.writePost(Object.fromEntries(map))
                 .then(response => {
                     alert("게시글이 생성되었습니다.")
-                    this.$router.push('/posts')
+                    this.$router.push('/')
                     console.log(response)
                 }).catch(error => {
                     console.log(error)

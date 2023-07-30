@@ -92,7 +92,7 @@ export default {
         },
         linkGen(pageNum) { // 버튼 클릭시 페이지 이동
             return {
-                path: '/posts',
+                path: '/',
                 query: { page: pageNum }
             }
         },
