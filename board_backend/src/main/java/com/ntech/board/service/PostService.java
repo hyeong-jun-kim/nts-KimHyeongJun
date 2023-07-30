@@ -9,10 +9,7 @@ import com.ntech.board.domain.Post;
 import com.ntech.board.domain.PostHashTag;
 import com.ntech.board.dto.comment.GetCommentRes;
 import com.ntech.board.dto.post.*;
-import com.ntech.board.repository.HashTagRepository;
-import com.ntech.board.repository.LikeRepository;
-import com.ntech.board.repository.PostHashTagRepository;
-import com.ntech.board.repository.PostRepository;
+import com.ntech.board.repository.*;
 import com.ntech.board.utils.encrypt.SHA256;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -40,6 +37,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
 
     private final SHA256 sha256;
 
@@ -100,7 +98,8 @@ public class PostService {
             return getPostRes;
         });
 
-        return new PageResult<>(postPage);
+        long commentCount = commentRepository.count();
+        return new PageResult<>(postPage, commentCount);
     }
 
     // 게시글 상세 보기
@@ -137,6 +136,9 @@ public class PostService {
         return USER_VALIDATE_SUCCESS;
     }
 
+    /**
+     * 편의 메서드
+     */
     // 게시글 검증 함수
     public void validateCreateBoard(CreatePostReq postReqDto) {
         // 검증 : 4 <= pwd.length <= 15
