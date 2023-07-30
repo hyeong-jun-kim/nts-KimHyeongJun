@@ -81,7 +81,7 @@ public class CommentService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new BaseException(NOT_EXIST_POST));
 
-        PageRequest pageRequest = PageRequest.of(page, COMMENT_PAGE_SIZE, Sort.by("id").descending());
+        PageRequest pageRequest = PageRequest.of(page - 1, COMMENT_PAGE_SIZE, Sort.by("id").descending());
         return commentCustomRepository.getCommentsByPost(post, pageRequest);
     }
 
@@ -95,6 +95,8 @@ public class CommentService {
         String encryptPwd = sha256.encrypt(inputPassword);
         if(!comment.getPassword().equals(encryptPwd))
             throw new BaseException(NOT_MATCH_PASSWORD);
+
+        // 84
     }
 
 

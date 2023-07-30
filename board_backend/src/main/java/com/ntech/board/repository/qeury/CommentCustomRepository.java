@@ -23,7 +23,7 @@ public class CommentCustomRepository {
         List<Comment> commentList = query.select(comment)
                 .from(comment)
                 .where(comment.post.eq(post))
-                .orderBy(comment.createdAt.asc(), comment.id.asc())
+                .orderBy(comment.createdAt.desc(), comment.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1) // 페이징을 위해 11개 가져옴
                 .fetch();

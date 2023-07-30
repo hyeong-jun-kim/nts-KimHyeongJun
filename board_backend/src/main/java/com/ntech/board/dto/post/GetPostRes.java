@@ -15,6 +15,7 @@ public class GetPostRes {
     private long postId;
     private String title;
     private String content;
+    private int commentCount;
     private int likeCnt;
     private int unLikeCnt;
     private int viewCount;

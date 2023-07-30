@@ -89,13 +89,15 @@ public class PostService {
     public PageResult<GetPostRes> getPostPagingList(int page) {
         PageRequest pageRequest = getPageRequestByPage(page);
 
-        Page<GetPostRes> postPage = postRepository.findPostPage(pageRequest).map(p -> {
-            int likeCnt = likeRepository.countByPostAndLikeType(p, LikeType.LIKE); // 게시글 좋아요 수 카운트
+        Page<GetPostRes> postPage = postRepository.findPostPage(pageRequest).map(post -> {
+            int likeCnt = likeRepository.countByPostAndLikeType(post, LikeType.LIKE); // 게시글 좋아요 수 카운트
+            int commentCnt = commentRepository.countByPost(post); // 댓글 수 카운트
 
-            GetPostRes getPostRes = GetPostRes.toDto(p, likeCnt, 0);
+            GetPostRes getPostRes = GetPostRes.toDto(post, likeCnt, 0);
+            getPostRes.setCommentCount(commentCnt);
 
             // 3일이내 등록된 게시글인지 확인
-            if (isWithin3DaysFromPost(p.getCreatedAt()))
+            if (isWithin3DaysFromPost(post.getCreatedAt()))
                 getPostRes.setNew(true);
 
             return getPostRes;
