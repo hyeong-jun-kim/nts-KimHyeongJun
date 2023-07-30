@@ -6,7 +6,7 @@ import com.ntech.board.domain.Post;
 import com.ntech.board.dto.comment.*;
 import com.ntech.board.repository.CommentRepository;
 import com.ntech.board.repository.PostRepository;
-import com.ntech.board.repository.qeury.CommentCustomRepository;
+import com.ntech.board.repository.query.CommentCustomRepository;
 import com.ntech.board.utils.encrypt.SHA256;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

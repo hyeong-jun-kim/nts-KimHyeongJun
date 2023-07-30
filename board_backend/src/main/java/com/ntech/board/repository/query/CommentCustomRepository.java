@@ -1,4 +1,4 @@
-package com.ntech.board.repository.qeury;
+package com.ntech.board.repository.query;
 
 import com.ntech.board.config.status.BaseStatus;
 import com.ntech.board.domain.Comment;
@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.ntech.board.domain.QComment.comment;
 
@@ -27,7 +26,7 @@ public class CommentCustomRepository {
                 .where(comment.post.eq(post))
                 .orderBy(comment.createdAt.desc(), comment.id.desc())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1) // 페이징을 위해 11개 가져옴
+                .limit(pageable.getPageSize() + 1) // 페이징을 위해 6개 가져옴
                 .fetch();
 
         boolean isFinalPage = true; // 마지막 페이지인가
