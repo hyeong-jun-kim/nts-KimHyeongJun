@@ -39,7 +39,9 @@ export default {
             map.set("content", this.content)
 
             const response = await this.commentService.writeComment(Object.fromEntries(map))
-            this.$emit('comments-to-post', response.data.result.comments) // 상위 컴포넌트로 값 전달하기
+            console.log(response.data.result)
+            this.$emit('comments-to-post', response.data.result.comments, response.data.result.final) // 상위 컴포넌트로 값 전달하기
+            this.resetContents()
             alert("댓글이 작성되었습니다.")
         },
         // 대슬 작성시 검증 메서드
@@ -52,7 +54,7 @@ export default {
 
             // 검증 : 비밀번호 길이 < 4
             if (this.password.length < 4) {
-                alert("비밀번호는 최소 1글자 이상 입력하셔야 합니다.");
+                alert("비밀번호는 최소 4글자 이상 입력하셔야 합니다.");
                 return false;
             }
 
@@ -63,6 +65,11 @@ export default {
             }
 
             return true;
+        },
+        resetContents(){
+            this.writer = '',
+            this.password = '',
+            this.content = ''
         }
     }
 }

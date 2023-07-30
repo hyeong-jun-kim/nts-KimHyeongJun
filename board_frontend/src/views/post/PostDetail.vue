@@ -143,9 +143,9 @@ export default {
         /**
          * 댓글관련 함수
          */
-        handleComments(comments) { // 댓글 작성후 댓글 목록 reload
+        handleComments(comments, final) { // 댓글 작성후 댓글 목록 reload
             this.comments = comments
-            console.log(comments)
+            this.isNextPage = !final
         },
         modifyCommentEvent(commentId, editedContent) {
             const modifyComment = this.comments.find((data => {
