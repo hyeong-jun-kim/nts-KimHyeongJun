@@ -65,6 +65,10 @@ public class PostService {
             throw new BaseException(NOT_MATCH_PASSWORD);
 
         post.modifyPost(postReq.getTitle(), postReq.getContent());
+
+        // 해시태그 수정
+        hashTagService.modifyPostHashTags(postReq.getHashtags(), post);
+
         return POST_MODIFY_SUCCESS;
     }
 
