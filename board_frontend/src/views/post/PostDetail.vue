@@ -4,18 +4,18 @@
         <!--제목, 부가정보-->
         <div class="post-detail-contents">
             <b-card :title="postTitle" class="text-left">
-                <b-row align-h="between">
+                <b-row>
                     <b-col cols="5">닉네임: {{ writer }}</b-col>
-                    <b-col class="text-left" cols="10">작성일지: {{ createdAt }}</b-col>
-                    <b-col class="text-right" cols="1">조회수: {{ viewCnt }}</b-col>
-                    <b-col class="text-right" cols="1">좋아요: {{ likeCnt }}</b-col>
+                    <b-col cols="9">작성일지: {{ createdAt }}</b-col>
+                    <b-col class="text-right">조회수: {{ viewCnt }}</b-col>
+                    <b-col class="text-right">좋아요: {{ likeCnt }}</b-col>
                 </b-row>
             </b-card>
             <!--본문-->
             <b-form-textarea class="ml-2 mt-3" v-model="content" id="textarea-rows" cols="3" rows="10" plaintext
                 :value="text"></b-form-textarea>
             <!--해시태그-->
-            <div class="d-flex justify-content-start">
+            <div class="d-flex justify-content-start ml-2">
                 <div v-for="(item, index) in hashtags" :key="index" class="mb-4 mr-3"
                     style="display: inline">
                     {{ "# " + item}}
@@ -115,7 +115,7 @@ export default {
                 .then(response => {
                     if (response.data.code == 1007) {
                         alert("게시글이 삭제되었습니다.")
-                        this.$router.push('/posts') // 게시글 목록으로 이동 
+                        this.$router.push('/') // 게시글 목록으로 이동 
                     }
                 }).catch(error => {
                     console.log(error)

@@ -3,7 +3,7 @@
     <div>
         <header>
             <div id="nav">
-                <router-link to="/posts">게시판 이동</router-link>
+                <router-link to="/">게시판 이동</router-link>
             </div>
         </header>
         <hr />
