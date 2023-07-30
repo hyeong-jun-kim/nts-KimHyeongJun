@@ -1,7 +1,6 @@
 package com.ntech.board.config.page;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -9,7 +8,8 @@ import java.util.stream.Collectors;
 
 @Getter
 public class PageResult<T> {
-    public static final int PAGE_SIZE = 10;
+    public static final int POST_PAGE_SIZE = 10;
+    public static final int COMMENT_PAGE_SIZE = 5;
     private long postCount; // 총 게시글 수
     private long commentCount; // 총 댓글 수
 

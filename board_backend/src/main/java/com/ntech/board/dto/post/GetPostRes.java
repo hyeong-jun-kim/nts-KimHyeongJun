@@ -1,15 +1,15 @@
 package com.ntech.board.dto.post;
 
 import com.ntech.board.domain.Post;
-import com.ntech.board.dto.comment.GetCommentRes;
+import com.ntech.board.dto.comment.GetCommentListRes;
 import lombok.*;
 
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Setter
+@Getter
 @Builder
 public class GetPostRes {
     private long postId;
@@ -22,7 +22,7 @@ public class GetPostRes {
     private String createdAt;
     private boolean isNew;
 
-    private List<GetCommentRes> comments;
+    private GetCommentListRes commentPage;
     private List<String> hashtags;
 
     public static GetPostRes toDto(Post post, int likeCnt, int unLikeCnt){

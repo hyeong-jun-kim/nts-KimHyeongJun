@@ -5,7 +5,7 @@ import com.ntech.board.config.response.BaseException;
 import com.ntech.board.config.response.BaseResponseStatus;
 import com.ntech.board.config.type.LikeType;
 import com.ntech.board.domain.Post;
-import com.ntech.board.dto.comment.GetCommentRes;
+import com.ntech.board.dto.comment.GetCommentListRes;
 import com.ntech.board.dto.post.*;
 import com.ntech.board.repository.*;
 import com.ntech.board.utils.encrypt.SHA256;
@@ -23,7 +23,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static com.ntech.board.config.page.PageResult.PAGE_SIZE;
+import static com.ntech.board.config.page.PageResult.POST_PAGE_SIZE;
 import static com.ntech.board.config.response.BaseResponseStatus.*;
 
 @Service
@@ -133,8 +133,8 @@ public class PostService {
 
         GetPostRes postRes = GetPostRes.toDto(post, likeCnt, unLikeCnt);
 
-        List<GetCommentRes> comments = commentService.getComments(post);
-        postRes.setComments(comments);
+        GetCommentListRes comments = commentService.getFirstComments(post);
+        postRes.setCommentPage(comments);
 
         // 해시태그 불러오기
         List<String> hashTags = hashTagService.getHashTags(post);
@@ -278,6 +278,6 @@ public class PostService {
     }
 
     private PageRequest getPageRequestByPage(int page){
-        return PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending());
+        return PageRequest.of(page - 1, POST_PAGE_SIZE, Sort.by("id").descending());
     }
 }
