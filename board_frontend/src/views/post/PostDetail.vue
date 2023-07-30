@@ -4,11 +4,11 @@
         <!--제목, 부가정보-->
         <div class="post-detail-contents">
             <b-card :title="postTitle" class="text-left">
-                <b-row align-h="between">
+                <b-row>
                     <b-col cols="5">닉네임: {{ writer }}</b-col>
-                    <b-col class="text-left" cols="10">작성일지: {{ createdAt }}</b-col>
-                    <b-col class="text-right" cols="1">조회수: {{ viewCnt }}</b-col>
-                    <b-col class="text-right" cols="1">좋아요: {{ likeCnt }}</b-col>
+                    <b-col class="text-left" cols="9">작성일지: {{ createdAt }}</b-col>
+                    <b-col class="text-right">조회수: {{ viewCnt }}</b-col>
+                    <b-col class="text-right">좋아요: {{ likeCnt }}</b-col>
                 </b-row>
             </b-card>
             <!--본문-->
