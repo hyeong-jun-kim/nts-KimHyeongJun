@@ -49,6 +49,14 @@ public class PostController {
         return new BaseResponse<>(postPage);
     }
 
+    // 게시글 검색 : 제목, 작성자, 해시태그
+    @GetMapping("/list/search")
+    public BaseResponse<PageResult<GetPostRes>> getSearchPostPagingList(@RequestParam("type") String type, @RequestParam("name") String name
+            , @RequestParam("page") int page) {
+        PageResult<GetPostRes> postPages = postService.getSearchPostPagingList(page, type, name);
+        return new BaseResponse<>(postPages);
+    }
+
     // 게시글 비밀번호 검증
     @PostMapping("/validate")
     public BaseResponse<String> validatePostPassword(@RequestBody ValidatePostReq postReq){

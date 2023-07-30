@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -31,7 +32,10 @@ public class Post extends BaseEntity {
     private int viewCount;
 
     @OneToMany(mappedBy = "post", fetch=FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Like> likes;
+    private List<Like> likes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", fetch=FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostHashTag> postHashTags = new ArrayList<>();
 
     public void addLike(Like like){
         this.likes.add(like);

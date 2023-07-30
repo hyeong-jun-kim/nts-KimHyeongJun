@@ -7,11 +7,6 @@ export default class postService {
     writePost(postWriteReq) {
         return $axiosInst
             .post('/post/create', postWriteReq)
-            // .then( response => {
-            //     console.log(response)
-            // }).catch( error => {
-            //     console.log(error);
-            // });
     }
     /**
      * 게시글 목록 불러오기
@@ -20,6 +15,19 @@ export default class postService {
         return $axiosInst
             .get('/post/list', {
                 params: {
+                    "page": page
+                }
+            });
+    }
+    /**
+     * 게시물 검색
+     */
+    searchPosts(page, type, name){
+        return $axiosInst
+            .get('/post/list/search', {
+                params: {
+                    "type": type,
+                    "name": name,
                     "page": page
                 }
             });

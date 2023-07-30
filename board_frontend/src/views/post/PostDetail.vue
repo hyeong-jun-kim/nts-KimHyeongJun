@@ -48,6 +48,7 @@
         </div>
     </div>
 </template>
+
 <script>
 import Comment from '../../common/components/Comment.vue';
 import CommentWrite from '../../common/components/CommentWrite.vue';
@@ -186,7 +187,7 @@ export default {
             if (eventType == "delete") {
                 this.deletePost(password)
             }
-        }
+        },
     },
 }
 </script>
