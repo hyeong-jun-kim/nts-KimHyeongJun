@@ -40,6 +40,7 @@ export default {
 
             const response = await this.commentService.writeComment(Object.fromEntries(map))
             this.$emit('comments-to-post', response.data.result.comments) // 상위 컴포넌트로 값 전달하기
+            alert("댓글이 작성되었습니다.")
         },
         // 대슬 작성시 검증 메서드
         validateWriteComment(){
