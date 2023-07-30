@@ -1,11 +1,15 @@
 <!-- 게시글 목록 화면 -->
 <template>
     <div class="overflow-auto">
+        <!--전체 게시글 수, 전체 댓글 수-->
+        <div class="d-flex justify-content-start ml-5 mb-3">
+            <p class="mr-3">전체 게시글 수: {{ postCount }}</p>
+            <p>전체 댓글 수: {{ commentCount }}</p>
+        </div>
         <!--글쓰기 버튼-->
         <div class="d-flex justify-content-start ml-5 mb-3">
             <b-button variant="primary" @click="goToWritePage">글쓰기</b-button>
         </div>
-
         <!--게시글 목록 테이블-->
         <b-table class="table-pagination" ref="table" :items="items" :fields="tableFields" :pages="pageList"
             :current-page="currentPage" medium @row-clicked="rowClickHandler"></b-table>
@@ -24,6 +28,8 @@ export default {
     inject: ['postService'],
     data() {
         return {
+            postCount: 0,
+            commentCount: 0,
             totalPage: 0,
             page: 0,
             size: 0,
@@ -83,6 +89,9 @@ export default {
                     this.page = result.page
                     this.size = result.size
                     this.pageList = result.pageList
+
+                    this.postCount = result.postCount;
+                    this.commentCount = result.commentCount;
 
                     this.$refs.table.refresh() // 테이블 새로고침
                 })
