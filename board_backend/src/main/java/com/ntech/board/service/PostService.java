@@ -9,7 +9,6 @@ import com.ntech.board.dto.comment.GetCommentRes;
 import com.ntech.board.dto.post.*;
 import com.ntech.board.repository.*;
 import com.ntech.board.utils.encrypt.SHA256;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -108,6 +107,7 @@ public class PostService {
 
         switch(type){
             case "title" -> postPageResult =  getPostPagingListByTitle(page, name);
+            case "content" -> postPageResult =  getPostPagingListByContent(page, name);
             case "writer" -> postPageResult =  getPostPagingListByWriter(page, name);
             case "hashtag" -> postPageResult =  getPostPagingListByHashtag(page, name);
         }
@@ -155,6 +155,25 @@ public class PostService {
         PageRequest pageRequest = getPageRequestByPage(page);
 
         Page<GetPostRes> postPage = postRepository.findPostPageByTitle(pageRequest, title).map(p -> {
+            int likeCnt = likeRepository.countByPostAndLikeType(p, LikeType.LIKE);
+
+            GetPostRes getPostRes = GetPostRes.toDto(p, likeCnt, 0);
+
+            if (isWithin3DaysFromPost(p.getCreatedAt()))
+                getPostRes.setNew(true);
+
+            return getPostRes;
+        });
+
+        long commentCount = commentRepository.count();
+        return new PageResult<>(postPage, commentCount);
+    }
+
+    // 게시글 검색 : 내용
+    private PageResult<GetPostRes> getPostPagingListByContent(int page, String content){
+        PageRequest pageRequest = getPageRequestByPage(page);
+
+        Page<GetPostRes> postPage = postRepository.findPostPageByContent(pageRequest, content).map(p -> {
             int likeCnt = likeRepository.countByPostAndLikeType(p, LikeType.LIKE);
 
             GetPostRes getPostRes = GetPostRes.toDto(p, likeCnt, 0);

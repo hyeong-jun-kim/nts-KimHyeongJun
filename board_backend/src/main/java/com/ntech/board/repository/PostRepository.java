@@ -21,12 +21,17 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findPostPageByTitle(Pageable pageable, @Param("title") String title);
 
     // 게시글 작성자로 검색
-    @Query(value = "select p from Post p where p.status = 'ACTIVE' and p.writer like :writer",
+    @Query(value = "select p from Post p where p.status = 'ACTIVE' and p.writer like %:writer%",
             countQuery = "select count(p) from Post p where p.status = 'ACTIVE' and p.writer like :writer")
     Page<Post> findPostPageByWriter(Pageable pageable,@Param("writer") String writer);
 
+    // 게시글 내용으로 검색
+    @Query(value = "select p from Post p where p.status = 'ACTIVE' and p.content like %:content%",
+            countQuery = "select count(p) from Post p where p.status = 'ACTIVE' and p.title like %:title%")
+    Page<Post> findPostPageByContent(Pageable pageable, @Param("content") String content);
+
     // 게시글 해시태그로 검색
-    @Query(value = "select p from Post p join p.postHashTags pt where pt.status = 'ACTIVE' and pt.hashTag.name = :hashtag",
+    @Query(value = "select p from Post p join p.postHashTags pt where pt.status = 'ACTIVE' and pt.hashTag.name like %:hashtag%",
             countQuery = "select count(p) from Post p join p.postHashTags pt where pt.status = 'ACTIVE' and pt.hashTag.name = :hashtag")
     Page<Post> findPostPageByHashtag(Pageable pageable, @Param("hashtag")String hashtag);
 }
