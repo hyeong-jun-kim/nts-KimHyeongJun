@@ -12,7 +12,6 @@ const router = new VueRouter({
     mode: "history",
     routes: [
         {path: "/", component: PostList}, // 글 목록
-        {path: '/search', component: PostList, name: 'Search'}, // 글 검색
         {path:"/post/write", component: PostWrite}, // 글 작성
         {path:"/post/modify/:postId", component: PostModify}, // 글 수정
         {path:"/post/:postId", component: PostDetail}, // 상세 글 보기

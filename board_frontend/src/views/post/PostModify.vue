@@ -7,7 +7,8 @@
                 <th>
                     <div class="password" @submit.stop.prevent>
                         <label for="text-password">비밀번호</label>
-                        <b-form-input v-model="password" :state="pwdValidation" id="text-password" type="password"></b-form-input>
+                        <b-form-input v-model="password" :state="pwdValidation" id="text-password"
+                            type="password"></b-form-input>
                         <b-form-invalid-feedback :state="pwdValidation">
                             비밀번호를 입력해주세요.
                         </b-form-invalid-feedback>
@@ -21,21 +22,32 @@
         <div class="board-contents">
             <b-form-textarea v-model="content" id="textarea-rows" cols="3" rows="10"></b-form-textarea>
         </div>
+        <!--해시태그-->
+        <div class="board-contents">
+            <hashtag v-if="dataLoaded" @update="updateHashTags" :tagsFromModify="tags"></hashtag>
+        </div>
         <div class="common-buttons">
             <b-button size="lg" variant="success" @click="modifyPost">수정</b-button>
         </div>
     </div>
 </template>
 <script>
+import Hashtag from '../../common/components/HashTag.vue';
+
 export default {
     inject: ['postService'], // inject를 통한 postService 주입
+    components: {
+        Hashtag: Hashtag
+    },
     data() {
         return {
             postId: this.$route.params.postId,
             writer: '',
             password: '',
             title: '',
-            content: ''
+            content: '',
+            tags: [],
+            dataLoaded: false
         }
     },
     mounted() {
@@ -55,6 +67,9 @@ export default {
                     // 게시글 정보 채우기
                     this.title = result.title
                     this.content = result.content
+                    this.tags = result.hashtags
+
+                    this.dataLoaded = true
                 })
                 .catch(error => {
                     console.log(error);
@@ -68,6 +83,7 @@ export default {
             map.set("password", this.password)
             map.set("title", this.title)
             map.set("content", this.content)
+            map.set("hashtags", this.tags)
 
             await this.postService.modifyPost(this.postId, Object.fromEntries(map))
                 .then(response => {
@@ -103,6 +119,9 @@ export default {
             }
 
             return true;
+        },
+        updateHashTags(hashtags) {
+            this.tags = hashtags
         }
     }
 };
