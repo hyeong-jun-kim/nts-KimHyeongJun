@@ -29,4 +29,15 @@ export default class commentService {
         return $axiosInst
             .post('/comment/delete', deleteCommentReq)
     }
+    /**
+     * 댓글 더 불러오기
+     */
+    getMoreComments(postId, page){
+        return $axiosInst
+            .get('/comment/get/'+postId, {
+                params: {
+                    "page": page
+                }
+            });
+    }
 }

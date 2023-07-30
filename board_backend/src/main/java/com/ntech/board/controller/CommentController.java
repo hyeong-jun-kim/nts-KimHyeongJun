@@ -42,4 +42,12 @@ public class CommentController {
         commentService.deleteComment(commentReq);
         return new BaseResponse<>(COMMENT_DELETE_SUCCESS);
     }
+
+    // 댓글 더보기
+    @GetMapping("/get/{postId}")
+    public BaseResponse<GetCommentListRes> getComments(@PathVariable("postId") long postId,
+                                                       @RequestParam("page") int page){
+        GetCommentListRes commentResList = commentService.getComments(postId, page);
+        return new BaseResponse<>(commentResList);
+    }
  }

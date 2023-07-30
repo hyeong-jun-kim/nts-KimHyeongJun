@@ -12,13 +12,12 @@
                 </b-row>
             </b-card>
             <!--본문-->
-            <b-form-textarea class="ml-2 mt-3" v-model="content" id="textarea-rows" cols="3" rows="10" plaintext
-                :value="text"></b-form-textarea>
+            <b-form-textarea class="ml-2 mt-4" v-model="content" id="textarea-rows" cols="3" rows="10" plaintext
+                :value="content"></b-form-textarea>
             <!--해시태그-->
             <div class="d-flex justify-content-start ml-2">
-                <div v-for="(item, index) in hashtags" :key="index" class="mb-4 mr-3"
-                    style="display: inline">
-                    {{ "# " + item}}
+                <div v-for="(item, index) in hashtags" :key="index" class="mb-4 mr-3" style="display: inline">
+                    {{ "# " + item }}
                 </div>
             </div>
             <!--좋아요, 싫어요-->
@@ -39,10 +38,14 @@
             </password>
             <!--댓글-->
             <div class="mb-3 text-left">
-                전체 댓글 {{ comments.length }}개
+                댓글 {{ comments.length }}개
             </div>
             <comment v-for="data in comments" @modify-comment="modifyCommentEvent" @delete-comment="deleteCommentEvent"
                 :key="data.comment.commentId" :data="data" />
+            <!--댓글 더보기-->
+            <div class="d-flex justify-content-start mt-3 mb-3 ml-2">
+                <b-button v-if="isNextPage" variant="secondary" @click="getMoreComments">댓글 더보기</b-button>
+            </div>
             <!--댓글 작성하기-->
             <comment-write @comments-to-post="handleComments" :postId="postId" />
         </div>
@@ -54,7 +57,7 @@ import Comment from '../../common/components/Comment.vue';
 import CommentWrite from '../../common/components/CommentWrite.vue';
 
 export default {
-    inject: ['postService', 'likeService'],
+    inject: ['commentService', 'postService', 'likeService'],
     components: { // 지역 컴포넌트 선언
         'comment': Comment,
         'comment-write': CommentWrite,
@@ -73,7 +76,9 @@ export default {
             hashtags: [],
             postId: this.$route.params.postId,
             showPassword: false,
-            eventType: ''
+            eventType: '',
+            isNextPage: false,
+            nextPage: 1
         }
     },
     mounted() {
@@ -96,7 +101,9 @@ export default {
                     this.unLikeCnt = result.unLikeCnt
 
                     // 댓글 목록 받아오기
-                    this.comments = result.comments
+                    this.comments = result.commentPage.comments
+                    this.isNextPage = !result.commentPage.final
+                    this.nextPage += 1
 
                     // 해시태그 받기
                     this.hashtags = result.hashtags
@@ -122,12 +129,23 @@ export default {
                     console.log(error)
                 })
         },
+        async getMoreComments() {
+            await this.commentService.getMoreComments(this.postId, this.nextPage)
+                .then(response => {
+                    const result = response.data.result;
+                    this.comments.push(...result.comments)
+                    this.isNextPage = !result.final
+                    this.nextPage += 1
+                }).catch(error => {
+                    console.log(error)
+                })
+        },
         /**
          * 댓글관련 함수
          */
-        handleComments(comments) { // 댓글 작성후 댓글 목록 reload
+        handleComments(comments, final) { // 댓글 작성후 댓글 목록 reload
             this.comments = comments
-            console.log(comments)
+            this.isNextPage = !final
         },
         modifyCommentEvent(commentId, editedContent) {
             const modifyComment = this.comments.find((data => {

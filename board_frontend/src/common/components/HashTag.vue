@@ -13,6 +13,7 @@
     <!--// Hashtags -->
 
     <div class="inp" v-show="!helpVisible">
+
       <input type="text" ref="input" v-model.trim="value" @focus="initSelect" @keydown.space.prevent="addHashTags"
         @keydown.enter.prevent="addHashTags" @keydown.backspace="initErrorMsg" @keydown.delete="initErrorMsg"
         placeholder="태그입력(최대 5개)" />
@@ -50,7 +51,7 @@ export default {
       return (this.helpVisible = false);
     },
     async setHashtags() {
-      if (this.tags.length > 0 && this.tagsFromModify == 0) {
+      if ((this.tagsFromModify == null && this.tags.length > 0) || (this.tagsFromModify != null && this.tags.length < this.tagsFromModify.length)) {
         return;
       }
 
@@ -73,7 +74,7 @@ export default {
       }
 
       this.tags[idx].select = !this.tags[idx].select;
-
+      
       if (!this.tags[idx].select) {
         this.initSelectIndex();
         return;

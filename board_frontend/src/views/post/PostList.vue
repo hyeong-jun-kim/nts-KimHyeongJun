@@ -56,6 +56,7 @@ export default {
                 { key: 'writer', label: '작성자', },
                 { key: 'title', label: '제목' },
                 { key: 'createdAt', label: '작성일' },
+                { key: 'commentCnt', label: '댓글수' },
                 { key: 'likeCnt', label: '좋아요' },
                 { key: 'viewCnt', label: '조회수' },
             ],
@@ -91,6 +92,9 @@ export default {
             await this.postService.getPostPagingList(page)
                 .then(response => {
                     const result = response.data.result;
+
+                    this.postCount = result.postCount;
+                    this.commentCount = result.commentCount;
                     this.loadedPosts(result)
                 })
                 .catch(error => {
@@ -136,6 +140,7 @@ export default {
 
                 item.createdAt = content.createdAt
                 item.likeCnt = content.likeCnt
+                item.commentCnt = content.commentCount
                 item.viewCnt = content.viewCount
 
                 this.items[i] = item
@@ -146,9 +151,6 @@ export default {
             this.page = pageResult.page
             this.size = pageResult.size
             this.pageList = pageResult.pageList
-
-            this.postCount = pageResult.postCount;
-            this.commentCount = pageResult.commentCount;
 
             this.$refs.table.refresh()
         },

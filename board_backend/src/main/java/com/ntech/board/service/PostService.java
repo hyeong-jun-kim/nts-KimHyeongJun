@@ -5,7 +5,7 @@ import com.ntech.board.config.response.BaseException;
 import com.ntech.board.config.response.BaseResponseStatus;
 import com.ntech.board.config.type.LikeType;
 import com.ntech.board.domain.Post;
-import com.ntech.board.dto.comment.GetCommentRes;
+import com.ntech.board.dto.comment.GetCommentListRes;
 import com.ntech.board.dto.post.*;
 import com.ntech.board.repository.*;
 import com.ntech.board.utils.encrypt.SHA256;
@@ -23,7 +23,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static com.ntech.board.config.page.PageResult.PAGE_SIZE;
+import static com.ntech.board.config.page.PageResult.POST_PAGE_SIZE;
 import static com.ntech.board.config.response.BaseResponseStatus.*;
 
 @Service
@@ -89,13 +89,15 @@ public class PostService {
     public PageResult<GetPostRes> getPostPagingList(int page) {
         PageRequest pageRequest = getPageRequestByPage(page);
 
-        Page<GetPostRes> postPage = postRepository.findPostPage(pageRequest).map(p -> {
-            int likeCnt = likeRepository.countByPostAndLikeType(p, LikeType.LIKE); // 게시글 좋아요 수 카운트
+        Page<GetPostRes> postPage = postRepository.findPostPage(pageRequest).map(post -> {
+            int likeCnt = likeRepository.countByPostAndLikeType(post, LikeType.LIKE); // 게시글 좋아요 수 카운트
+            int commentCnt = commentRepository.countByPost(post); // 댓글 수 카운트
 
-            GetPostRes getPostRes = GetPostRes.toDto(p, likeCnt, 0);
+            GetPostRes getPostRes = GetPostRes.toDto(post, likeCnt, 0);
+            getPostRes.setCommentCount(commentCnt);
 
             // 3일이내 등록된 게시글인지 확인
-            if (isWithin3DaysFromPost(p.getCreatedAt()))
+            if (isWithin3DaysFromPost(post.getCreatedAt()))
                 getPostRes.setNew(true);
 
             return getPostRes;
@@ -133,8 +135,8 @@ public class PostService {
 
         GetPostRes postRes = GetPostRes.toDto(post, likeCnt, unLikeCnt);
 
-        List<GetCommentRes> comments = commentService.getComments(post);
-        postRes.setComments(comments);
+        GetCommentListRes comments = commentService.getFirstComments(post);
+        postRes.setCommentPage(comments);
 
         // 해시태그 불러오기
         List<String> hashTags = hashTagService.getHashTags(post);
@@ -278,6 +280,6 @@ public class PostService {
     }
 
     private PageRequest getPageRequestByPage(int page){
-        return PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending());
+        return PageRequest.of(page - 1, POST_PAGE_SIZE, Sort.by("id").descending());
     }
 }

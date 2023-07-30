@@ -1,21 +1,20 @@
 package com.ntech.board.service;
 
 import com.ntech.board.config.response.BaseException;
-import com.ntech.board.config.status.BaseStatus;
 import com.ntech.board.domain.Comment;
 import com.ntech.board.domain.Post;
 import com.ntech.board.dto.comment.*;
 import com.ntech.board.repository.CommentRepository;
 import com.ntech.board.repository.PostRepository;
+import com.ntech.board.repository.qeury.CommentCustomRepository;
 import com.ntech.board.utils.encrypt.SHA256;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import static com.ntech.board.config.page.PageResult.COMMENT_PAGE_SIZE;
 import static com.ntech.board.config.response.BaseResponseStatus.*;
 
 @Service
@@ -23,6 +22,7 @@ import static com.ntech.board.config.response.BaseResponseStatus.*;
 @Transactional
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final CommentCustomRepository commentCustomRepository;
     private final PostRepository postRepository;
 
     private final SHA256 sha256;
@@ -32,8 +32,6 @@ public class CommentService {
         long postId = commentReq.getPostId();
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new BaseException(NOT_EXIST_POST));
-
-        // TODO 댓글 생성 검증
 
         commentReq.setPassword(sha256.encrypt(commentReq.getPassword())); // 비밀번호 암호화
         Comment comment = commentReq.toEntity(post);
@@ -47,9 +45,8 @@ public class CommentService {
         }
 
         commentRepository.save(comment);
-        List<GetCommentRes> getCommentResList = getComments(post);
 
-        return new GetCommentListRes(getCommentResList);
+        return getFirstComments(post);
     }
 
     // 댓글 비밀번호 검증
@@ -79,6 +76,15 @@ public class CommentService {
         comment.remove();
     }
 
+    // 댓글 더 불러오기
+    public GetCommentListRes getComments(long postId, int page){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new BaseException(NOT_EXIST_POST));
+
+        PageRequest pageRequest = PageRequest.of(page - 1, COMMENT_PAGE_SIZE, Sort.by("id").descending());
+        return commentCustomRepository.getCommentsByPost(post, pageRequest);
+    }
+
 
     /**
      * 편의 메서드
@@ -89,12 +95,14 @@ public class CommentService {
         String encryptPwd = sha256.encrypt(inputPassword);
         if(!comment.getPassword().equals(encryptPwd))
             throw new BaseException(NOT_MATCH_PASSWORD);
+
+        // 84
     }
 
 
-    // 댓글 불러오기
-    public List<GetCommentRes> getComments(Post post){
-        List<Comment> parentComments = commentRepository.getCommentsByPost(post);
-        return parentComments.stream().map(GetCommentRes::toDto).collect(Collectors.toList());
+    // 게시글 첫 댓글 불러오기
+    public GetCommentListRes getFirstComments(Post post){
+        PageRequest pageRequest = PageRequest.of(0, COMMENT_PAGE_SIZE, Sort.by("id").descending());
+        return commentCustomRepository.getCommentsByPost(post, pageRequest);
     }
 }
