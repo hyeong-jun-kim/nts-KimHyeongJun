@@ -36,14 +36,13 @@ public class CommentService {
         commentReq.setPassword(sha256.encrypt(commentReq.getPassword())); // 비밀번호 암호화
         Comment comment = commentReq.toEntity(post);
 
-        // 게시글 댓글 불러오기
+        // 대댓글일 경우 부모 커멘트에 추가
         long parentCommentId = commentReq.getParentCommentId();
         if(parentCommentId != 0){
             Comment parentComment = commentRepository.findById(parentCommentId)
                             .orElseThrow(() -> new BaseException(NOT_EXIST_COMMENT));
             comment.updateParentComment(parentComment);
         }
-
         commentRepository.save(comment);
 
         return getFirstComments(post);
@@ -90,13 +89,11 @@ public class CommentService {
      * 편의 메서드
      */
     // 댓글 비밀번호 검증하기
-    public void checkPassword(Comment comment, String inputPassword){
+    private void checkPassword(Comment comment, String inputPassword){
         // 비밀번호 검증
         String encryptPwd = sha256.encrypt(inputPassword);
         if(!comment.getPassword().equals(encryptPwd))
             throw new BaseException(NOT_MATCH_PASSWORD);
-
-        // 84
     }
 
 

@@ -39,12 +39,6 @@ public class Comment extends BaseEntity {
 
     private String password;
 
-    @Override
-    public void remove(){
-        super.changeStatus(BaseStatus.INACTIVE);
-        this.content = "삭제된 댓글입니다.";
-    }
-
     public void changeContent(String content){
         this.content = content;
     }

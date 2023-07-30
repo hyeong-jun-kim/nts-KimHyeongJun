@@ -20,7 +20,7 @@ public class GetCommentRes {
     public static GetCommentRes toDto(Comment comment) {
         return builder()
                 .comment(CommentDTO.toDto(comment))
-                // 대댓글 CommentDTO로 변환
+                // 대댓글 CommentDTO List로 변환
                 .childComments(comment.getChildComment() == null ? null :
                         comment.getChildComment().stream()
                                 .map(CommentDTO::toDto).collect(Collectors.toList()))
