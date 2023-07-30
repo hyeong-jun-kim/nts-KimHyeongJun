@@ -74,7 +74,7 @@ export default {
         else // 검색 게시글 목록
             this.searchPosts(this.currentPage)
 
-        console.log(this.$route.query.s_name)
+        document.title = "게시글 목록"
     },
     computed: {
         rows() {

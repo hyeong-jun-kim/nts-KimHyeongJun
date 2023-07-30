@@ -108,7 +108,7 @@ export default {
                     // 해시태그 받기
                     this.hashtags = result.hashtags
 
-                    console.log(this.comments)
+                    document.title = this.postTitle
                 })
                 .catch(error => {
                     console.log(error);

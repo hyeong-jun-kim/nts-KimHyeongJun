@@ -51,7 +51,8 @@ export default {
         }
     },
     mounted() {
-        this.getPost()
+        this.getPost(),
+        document.title = "게시글 수정"
     },
     computed: {
         pwdValidation() {

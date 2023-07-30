@@ -55,6 +55,9 @@ export default {
     components: {
         Hashtag: Hashtag
     },
+    mounted(){
+        document.title = "게시글 쓰기"
+    },
     data() {
         return {
             writer: '',

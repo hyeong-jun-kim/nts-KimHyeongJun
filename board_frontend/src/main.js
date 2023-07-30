@@ -4,7 +4,6 @@ import router from './router'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import './assets/common.css'
 
-import Writer from './common/components/Writer'
 import Password from './common/components/Password'
 import WarningAlert from './common/components/WarningAlert'
 
@@ -26,7 +25,6 @@ Vue.config.productionTip = false
 Vue.prototype.$http = axios
 
 // 컴포넌트 설정
-Vue.component("writer", Writer)
 Vue.component("password", Password)
 Vue.component("WarningAlert", WarningAlert)
 
@@ -39,9 +37,3 @@ new Vue({
     likeService: new likeService,
   }
 }).$mount('#app')
-
-
-//hand-thumbs-down
-// hand-thumbs-down-fill
-// hand-thumbs-up
-// hand-thumbs-up-fill
